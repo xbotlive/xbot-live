@@ -198,7 +198,7 @@ footer{
   <!-- MAIN -->
   <main class="faq-main">
     <h1 class="page-title">Frequently Asked Questions</h1>
-    <p class="page-sub">Everything you need to know about running your first simulation and interpreting the results.</p>
+    <p class="page-sub">Everything you need to run your first simulation and read the results properly.</p>
 
     <!-- GETTING STARTED -->
     <div class="segment" id="getting-started">
@@ -210,7 +210,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">A grid bot places a ladder of limit buy and sell orders at fixed price intervals within a defined range. When price drops, a buy fills. When it recovers, the corresponding sell fills. Each completed cycle — one buy and one sell at adjacent levels — captures the spread between them as profit. The bot repeats this automatically as long as price oscillates within the range.</div>
+          <div class="faq-a-inner">A grid bot places a ladder of buy and sell orders across a defined price range.<br><br>When price falls, buy orders fill. When price rises back up, the matching sell orders fill. Each completed cycle — one buy followed by one sell at the next level — captures the gap between those levels as profit.<br><br>The bot keeps repeating this process while price moves back and forth inside the range.</div>
         </div>
       </div>
 
@@ -220,7 +220,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">Markets that oscillate within a range rather than trend strongly in one direction. ADX (Average Directional Index) below 20 indicates ranging conditions — the simulator's Market Analysis panel calculates this from live data when you select a market. High-volume, liquid perpetual futures pairs (BTC, ETH, SOL) are the most commonly used. Avoid low-liquidity markets where spreads and slippage will erode returns.</div>
+          <div class="faq-a-inner">Grid bots work best in markets that move sideways rather than trend hard in one direction.<br><br>The ideal setup is a liquid market with steady two-way movement — enough volatility to trigger fills, but not so much that price breaks out and keeps running. BTC, ETH and SOL perpetual futures are common choices because they usually have tighter spreads and better depth.<br><br>As a rule: lower ADX suits grid trading better than high ADX, high liquidity is better than thin books, and stable range behaviour is better than strong trending behaviour.<br><br>Avoid illiquid markets. Wide spreads, poor fills and slippage can wipe out the edge quickly.</div>
         </div>
       </div>
 
@@ -230,7 +230,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">The minimum is determined by the exchange's minimum order size (typically $5 notional per grid level). With 20 grids at 5× leverage, that requires $20 of margin ($100 notional) at an absolute minimum — but at that scale, fees will dominate. A more realistic starting point is $500–$1,000 margin for a 20-grid setup. The simulator shows a "Notional per grid" figure as you adjust parameters — aim for at least $20 notional per grid for fee ratios to be manageable.</div>
+          <div class="faq-a-inner">The absolute minimum is set by the exchange's minimum order size — often around <strong>$5 notional per grid level</strong>. With 20 grids at 5× leverage, that implies about <strong>$100 notional</strong> total, or roughly <strong>$20 of margin</strong>. In practice, that is too small because fees become a large share of expected profit.<br><br>A more realistic starting point is <strong>$500–$1,000 of margin</strong> for a 20-grid setup.<br><br>The important number is notional per grid. Try to keep it at <strong>$20 or more per grid</strong> so fee drag stays manageable.</div>
         </div>
       </div>
 
@@ -240,7 +240,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">No. The simulator handles all calculations. But understanding the concepts — how liquidation works, what funding drag costs, what profit per round trip means — will help you interpret the results meaningfully. The FAQ and blog articles cover each of these in plain terms.</div>
+          <div class="faq-a-inner">No. The simulator does the calculations for you.<br><br>That said, you will get better decisions if you understand the basics: liquidation distance, funding drag, and profit per completed round trip. You do not need a quant background, but you do need to know what the outputs are telling you.<br><br>The FAQ and blog break those ideas down in plain English.</div>
         </div>
       </div>
     </div>
@@ -251,11 +251,11 @@ footer{
 
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
-          What's the difference between Monte Carlo and backtest mode?
+          What is the difference between Monte Carlo and backtest mode?
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">Monte Carlo generates hundreds of synthetic price paths using your IV (implied volatility) and drift assumptions. It shows you a probability distribution of outcomes — what could happen across a wide range of scenarios. Backtest mode uses real historical OHLCV data that you upload as a CSV. It shows you exactly what would have happened on a specific market during a specific period. Use Monte Carlo for scenario planning; use backtesting for validation against real price history.</div>
+          <div class="faq-a-inner">They answer different questions.<br><br><strong>Monte Carlo</strong> asks: what could happen? It generates many synthetic price paths from your implied volatility and drift assumptions, then shows the spread of possible outcomes.<br><br><strong>Backtest</strong> asks: what would have happened? It runs the strategy against real historical OHLCV data from a specific market and period.<br><br>Use Monte Carlo for scenario planning and stress testing. Use backtest for checking the strategy against real market history. You usually want both.</div>
         </div>
       </div>
 
@@ -265,7 +265,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">The most common sources are Binance (via their data portal at data.binance.vision), TradingView (export from the chart), Bybit, and CoinGecko. Download as CSV in standard OHLCV format (timestamp, open, high, low, close, volume). The simulator auto-detects column order and timestamp format. Aim for at least 90 days of data at 1-hour or 4-hour intervals for a meaningful backtest.</div>
+          <div class="faq-a-inner">Common sources include Binance (data.binance.vision), TradingView (export from the chart), Bybit, and CoinGecko. The file should be a standard CSV with timestamp, open, high, low, close, and volume columns.<br><br>Aim for at least <strong>90 days</strong> of data if you want the result to mean anything. 1-hour or 4-hour candles are a sensible starting point for most grid tests. More data usually gives a more honest picture.</div>
         </div>
       </div>
 
@@ -275,7 +275,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">The liquidation price is calculated from your average entry price, which depends on where your opening position is placed. For a long grid bot, the opening position fills at the entry price going down — so a wider grid range that extends lower changes the average entry, which shifts the liquidation price. Adjusting leverage has the most direct impact on liquidation distance.</div>
+          <div class="faq-a-inner">Because the grid range changes your average entry.<br><br>For a long grid, orders fill lower as price drops. If you widen the range downward, you change which orders can fill and at what levels — that changes the average entry price, which changes the liquidation price.<br><br>In plain terms: change the structure of the fill ladder, and you change the liquidation point. Leverage still has the biggest direct effect, but grid range matters because it shifts the position build.</div>
         </div>
       </div>
 
@@ -285,7 +285,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">When you run two configurations in A/B mode, both simulations use the same underlying random seed — meaning they simulate the exact same price paths. This is intentional: it isolates your configuration change as the only variable. If the seed were different, outcome differences could be caused by random variation rather than the strategy difference you're testing.</div>
+          <div class="faq-a-inner">It means both configurations are tested on the exact same random price paths.<br><br>That matters because it removes luck from the comparison. If one setup performs better, the difference is more likely to come from the strategy settings rather than from a different random sequence.<br><br>Without a shared seed, you could be comparing two different strategies on two different effective markets — which is not a clean test.</div>
         </div>
       </div>
 
@@ -295,7 +295,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">An odd number of grids creates an ambiguous anchor point — the level closest to the entry price could be either a bid or an ask depending on tiny floating-point differences. An even number guarantees exactly N/2 buy orders below entry and N/2 sell orders above entry with no tie-breaking required. The simulator enforces this automatically.</div>
+          <div class="faq-a-inner">Because an odd number creates an awkward centre point.<br><br>With an even number, the simulator places exactly half the orders below entry and half above — a clean, symmetrical structure with no ambiguity around the level nearest the entry price.<br><br>With an odd number, the centre level becomes messy and the bot has to decide whether it belongs to the bid side or ask side. The simulator blocks odd numbers to avoid this.</div>
         </div>
       </div>
 
@@ -305,7 +305,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">Yes. Use the "Saved Configs" panel at the top of the left panel. Give your config a name and it will persist in your browser's localStorage. You can also share a configuration as a URL — use the "Copy link" button in the toolbar. Anyone opening that link will have your exact configuration pre-loaded.</div>
+          <div class="faq-a-inner">Yes. Use <strong>Saved Configs</strong> to store setups in your browser. Once saved, they persist locally on that device. You can also share a setup by copying a link, which loads the same parameters for anyone who opens it.<br><br>This makes it easy to keep a library of test cases and compare ideas properly instead of rebuilding each setup from scratch.</div>
         </div>
       </div>
 
@@ -315,7 +315,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">It copies a URL to your clipboard that encodes your current configuration as a base64 parameter (<code>?c=...</code>). Anyone opening that link sees the simulator with your exact parameter set pre-loaded. Ephemeral data (live prices, uploaded CSVs) is not included — only the configuration inputs.</div>
+          <div class="faq-a-inner">It creates a shareable URL containing your current configuration. When someone opens that link, the simulator loads with those settings already filled in.<br><br>It only includes configuration inputs — not temporary data such as live prices or uploaded CSV files. It is a fast way to share a test setup, compare ideas, or bookmark a specific configuration.</div>
         </div>
       </div>
     </div>
@@ -330,17 +330,17 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">The profit earned from one complete cycle: a buy order fills, then the corresponding sell order fills at the next level up. For an arithmetic grid, this equals the grid spacing minus the round-trip maker fee cost. The simulator displays this as a dollar amount and a percentage of order size. Break-even oscillations = opening taker cost ÷ profit per round trip.</div>
+          <div class="faq-a-inner">The profit from one full grid cycle: a buy fills, then the matching sell fills one level higher.<br><br>For a standard arithmetic grid, that profit is roughly: <strong>grid spacing − round-trip maker fees</strong>.<br><br>The simulator shows this as both a dollar amount and a percentage of order size. This is one of the most important outputs on the page — if profit per round trip is too thin, the setup will struggle even before funding and directional risk are considered.</div>
         </div>
       </div>
 
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
-          What's the difference between arithmetic and geometric grid spacing?
+          What is the difference between arithmetic and geometric grid spacing?
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">Arithmetic spacing places grid levels at equal dollar intervals (e.g. every $500). Geometric spacing places them at equal percentage intervals (e.g. every 0.5%). For tight ranges, arithmetic is simpler. For wide ranges — especially above $10,000 in price — geometric is more appropriate because the same percentage move at $90,000 is a much larger dollar move than at $60,000. Most exchange grid bots default to geometric.</div>
+          <div class="faq-a-inner"><strong>Arithmetic spacing</strong> uses equal price gaps — e.g. every $500.<br><strong>Geometric spacing</strong> uses equal percentage gaps — e.g. every 0.5%.<br><br>Arithmetic is simple and works fine for tighter ranges. Geometric is usually better for wider ranges, especially at high prices, because percentage moves scale more naturally than fixed dollar gaps. That is why many exchange grid bots default to geometric spacing.</div>
         </div>
       </div>
 
@@ -350,17 +350,17 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">A neutral grid runs two independent order books simultaneously — a long book (buy orders below entry) and a short book (sell orders above entry). As price falls, buys fill and open long positions. As price rises, sells fill and open short positions. At entry price, the net position is flat. Neutral grids earn from oscillation without taking a directional bias, but they are more complex: both books have independent liquidation prices and funding exposure.</div>
+          <div class="faq-a-inner">A neutral grid runs both sides at once — a long book below entry and a short book above entry. As price falls, the lower buy side fills and opens long exposure. As price rises, the upper sell side fills and opens short exposure. At the entry level, the net position starts flat.<br><br>The attraction is harvesting two-way movement without a directional view. The cost is complexity: a neutral grid has two books to manage, two sets of exposure building over time, separate liquidation considerations, and funding effects on both sides. It is more flexible, but it is not simpler.</div>
         </div>
       </div>
 
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
-          How does the bot handle the price moving in one direction without oscillating?
+          How does the bot handle price moving in one direction without oscillating?
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">If price trends strongly in one direction and stays there, the bot accumulates a growing open position in the opposite direction. For a long bot in a falling market, this means a large and increasingly underwater long position. The bot continues placing orders but cannot close them until price recovers. This is the primary risk. The TP/SL settings allow you to cap the loss by closing the position if price moves too far against you.</div>
+          <div class="faq-a-inner">Poorly — and that is the main risk of grid trading.<br><br>A grid bot needs back-and-forth movement. If price runs one way and does not come back, the bot keeps building exposure against the move. For a long grid in a falling market, that means it keeps accumulating a larger losing long position. Orders may keep filling, but the bot cannot realise the intended grid profits until price rebounds.<br><br>Take-profit and stop-loss settings help by cutting the trade before the position becomes too large or the drawdown becomes unacceptable.</div>
         </div>
       </div>
     </div>
@@ -375,7 +375,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">Perpetual futures use a funding mechanism to keep the perpetual price close to the spot price. Every 8 hours (or 1 hour on some exchanges), long positions pay short positions (or vice versa) a small percentage of their notional value. At 0.01% per 8 hours, a $10,000 notional position costs $1 every 8 hours — $1,095 per year. For leveraged grid bots running large notional positions, funding is a significant drag. The simulator models this continuously.</div>
+          <div class="faq-a-inner">Perpetual futures use funding to keep the perpetual price close to spot. At regular intervals — often every 8 hours, sometimes every hour — one side pays the other based on open notional exposure.<br><br>Even a small rate becomes meaningful over time. Example: at 0.01% per 8 hours on a $10,000 notional position, that is $1 per period — <strong>$1,095 per year if sustained</strong>.<br><br>For leveraged grid bots with large notional exposure, funding can turn a seemingly profitable setup into a bad one. Always treat funding as a real line item, not a footnote.</div>
         </div>
       </div>
 
@@ -385,7 +385,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner"><code>Liq price = avg entry × (1 − 1/leverage + MMR + 2×taker_fee + funding_per_period)</code> for a long position. The key inputs are leverage (lower leverage = further liquidation), maintenance margin rate (exchange-specific, typically 0.5%), and average entry price (which depends on how many grid levels have filled). The simulator shows both a static display estimate and uses a dynamic formula during simulation that accounts for realised P&L shifting as the bot earns.</div>
+          <div class="faq-a-inner">Liquidation price depends on average entry price, leverage, maintenance margin rate, fees, and funding effects.<br><br>The intuition is simple: higher leverage brings liquidation closer, a worse average entry brings it closer, and higher maintenance margin and extra costs bring it closer.<br><br>The exact formula varies by exchange and shifts as the bot realises profit or builds more size. So the displayed figure is best treated as a working estimate. What matters most: <strong>liquidation is dynamic because the position is dynamic.</strong></div>
         </div>
       </div>
 
@@ -395,7 +395,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">Yes, in two scenarios. First, funding drag: if funding rates are high and the simulation runs long enough, cumulative funding payments can exceed grid income. The simulator shows median funding paid alongside median grid P&L so you can see this directly. Second, a neutral grid can accumulate unrealised losses on one book if price drifts to one side of the range and stays there, even without liquidation.</div>
+          <div class="faq-a-inner">Yes. There are two common ways this happens.<br><br><strong>Funding drag:</strong> if funding is persistently costly and the run is long enough, cumulative funding payments can exceed the grid income.<br><br><strong>Position imbalance:</strong> a neutral grid can still carry sizeable unrealised losses on one side if price drifts toward one edge and sits there.<br><br>Staying inside the range does not automatically mean the setup is safe or profitable. Grid income is only one part of the result.</div>
         </div>
       </div>
 
@@ -405,7 +405,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">For Long and Short bots, opening the initial position costs a taker fee (because market orders are used to open). Break-even oscillations = that opening cost ÷ profit per round trip. If break-even is 12 oscillations and your simulation shows a median of 40 oscillations, you have significant margin before the bot becomes unprofitable purely from a fee perspective. Neutral grids do not have an opening cost (all orders are placed as resting limits), so break-even does not apply.</div>
+          <div class="faq-a-inner">This tells you how many completed grid cycles the bot needs just to recover its initial opening cost.<br><br>For long and short bots, the opening position is typically entered with a taker order, creating an upfront fee cost. The idea is: <strong>break-even oscillations = opening cost ÷ profit per round trip</strong>.<br><br>Example: if break-even is 12 oscillations and the median simulation shows 40 oscillations, the setup has decent room to absorb the initial cost. For neutral grids, there is no initial market-entry cost in the same way, so this metric usually does not apply.</div>
         </div>
       </div>
     </div>
@@ -420,7 +420,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">The percentage of simulated price paths where the bot ends with positive total P&L (grid income + unrealised position − funding paid). A win rate of 65% means 65% of the 500 simulated scenarios ended in profit. It is not the percentage of individual grid orders that filled profitably — every completed round trip is profitable by construction.</div>
+          <div class="faq-a-inner">Win rate is the share of simulation runs that finish with positive total P&amp;L — including grid income, unrealised P&amp;L on any open position, and funding paid or received.<br><br>If win rate is 65%, that means 65 out of 100 simulated runs ended in profit. It does <strong>not</strong> mean 65% of individual orders were profitable. In a grid, each completed round trip is profitable before broader position and funding effects are taken into account.</div>
         </div>
       </div>
 
@@ -430,7 +430,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">Annualised return divided by annualised standard deviation of daily returns, calculated across all simulated paths. A Sharpe above 1.0 indicates good risk-adjusted returns. Negative Sharpe means the strategy lost money on average. Sharpe is calculated from daily P&L variation across all paths in the simulation, not from a single path.</div>
+          <div class="faq-a-inner">Sharpe ratio measures return relative to volatility. In plain terms: how much return did the strategy produce for the amount of P&amp;L fluctuation it took to get there?<br><br>A practical reading: above 1.0 is generally solid risk-adjusted performance, around 0 means little reward for the risk taken, below 0 means the strategy lost money on average.<br><br>Use Sharpe to compare setups, not to predict future outcomes.</div>
         </div>
       </div>
 
@@ -440,17 +440,17 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">Annualised median return divided by median maximum drawdown. Higher is better. A Calmar of 2.0 means the strategy returned twice its typical worst peak-to-trough loss on an annualised basis. It is a more intuitive risk measure than Sharpe for strategies with skewed return distributions, which grid bots often have.</div>
+          <div class="faq-a-inner">Calmar ratio compares return to drawdown: how much return did the strategy generate relative to its worst peak-to-trough loss? Higher is better.<br><br>For many traders, Calmar is easier to understand than Sharpe because drawdown is the risk they actually feel. That is especially true for grid strategies, where outcomes can be skewed and the pain usually shows up as a large open loss before anything else.</div>
         </div>
       </div>
 
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
-          Why is P95 PnL so much higher than median?
+          Why is P95 P&amp;L so much higher than median?
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">The P95 outcome is the 95th percentile — better than 95% of simulated paths. It represents a fortunate scenario where price oscillated frequently within the range and never came close to the grid boundaries. The median is a more reliable planning figure. The gap between median and P95 reflects the range of possible outcomes — a wide gap means high variance in results.</div>
+          <div class="faq-a-inner">Because P95 is an upside case, not the typical case. P95 means a result that only the best 5% of simulation runs exceeded — usually reflecting a very favourable path with frequent oscillation inside the grid and limited stress near the boundaries.<br><br>The <strong>median</strong> is the more useful planning number. A large gap between median and P95 usually means outcomes are widely spread, so the strategy is more path-dependent than it first appears.</div>
         </div>
       </div>
 
@@ -460,7 +460,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">The amber line is the median P&L path across all simulations. The blue shaded band is the 10th–90th percentile range — 80% of simulated paths fall within it. The outer band (lighter) covers the 25th–75th percentile range. When price paths are shown, the green line is the best outcome (highest final price), the red line is the worst, and the amber line is the median.</div>
+          <div class="faq-a-inner">The fan chart shows how outcomes spread over time across all simulations.<br><br>The <strong>median line</strong> is the middle outcome path. The <strong>25th–75th percentile band</strong> contains the middle 50% of outcomes. The <strong>10th–90th percentile band</strong> contains 80% of outcomes.<br><br>A narrow fan means outcomes are relatively stable. A wide fan means outcomes vary more and the setup is less predictable. Best and worst price paths mark the extremes — useful for context, but not what you should plan around.</div>
         </div>
       </div>
     </div>
