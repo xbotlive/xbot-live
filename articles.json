@@ -97,5 +97,14 @@
     "readTime": "6 min read",
     "description": "Leverage amplifies both income and liquidation risk. Here's how to calculate the right leverage for your range, capital, and risk tolerance.",
     "publishedAt": "2025-08-04"
+  },
+  {
+    "slug": "blog-backtest-pitfalls",
+    "url": "/blog-backtest-pitfalls.html",
+    "title": "Why your grid bot backtest looks better than your live results will",
+    "tag": "Backtest",
+    "readTime": "7 min read",
+    "description": "A backtest on one period is not validation. Here are the four ways grid bot backtests systematically flatter the strategy — and how to stress-test against each one.",
+    "publishedAt": "2025-08-07"
   }
 ]
