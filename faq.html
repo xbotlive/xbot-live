@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FAQ — Futures Grid Simulator</title>
+<meta name="description" content="Answers to common questions about grid bot simulation, configuration, liquidation, funding, and interpreting Monte Carlo and backtest results."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000000;
+  --panel:#111111;
+  --card:#1a1a1a;
+  --border:#333333;
+  --border2:#222222;
+  --text:#ffffff;
+  --muted:#999999;
+  --dim:#666666;
+  --green:#00c853;
+  --red:#ff1744;
+  --amber:#f0b90b;
+  --blue:#4b8ded;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--text);line-height:1.6}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:var(--panel);
+  border-bottom:1px solid var(--border);
+  padding:0 28px;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-left{display:flex;align-items:center;gap:10px}
+.wordmark{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.01em;text-decoration:none}
+.badge{font-size:10px;color:var(--blue);background:rgba(75,141,237,0.09);padding:3px 9px;border-radius:4px;font-weight:600;letter-spacing:.05em}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-link{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.btn-amber{background:var(--amber);color:#000;border:none;border-radius:5px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:opacity .15s}
+.btn-amber:hover{opacity:.85}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--muted)}
+.nav-links-mobile{display:none}
+
+/* LAYOUT */
+.page-wrap{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  max-width:1100px;
+  margin:0 auto;
+  padding:80px 24px 80px;
+  gap:60px;
+  align-items:start;
+}
+
+/* SIDEBAR */
+.sidebar{
+  position:sticky;
+  top:80px;
+}
+.sidebar-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
+.sidebar-nav{display:flex;flex-direction:column;gap:0}
+.sidebar-link{
+  font-size:12px;color:var(--muted);text-decoration:none;
+  padding:6px 0 6px 12px;
+  border-left:2px solid transparent;
+  transition:color .15s,border-color .15s,padding .1s;
+  display:block;
+  line-height:1.4;
+}
+.sidebar-link:hover{color:var(--text)}
+.sidebar-link.active{color:var(--amber);border-left-color:var(--amber);padding-left:10px}
+
+/* MAIN CONTENT */
+.faq-main{}
+.page-title{font-size:26px;font-weight:700;letter-spacing:-0.01em;margin-bottom:8px}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:56px}
+
+/* SEGMENT */
+.segment{margin-bottom:56px}
+.segment-heading{
+  font-size:15px;font-weight:700;color:var(--text);
+  margin-bottom:16px;margin-top:40px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border2);
+}
+.segment:first-child .segment-heading{margin-top:0}
+
+/* ACCORDION */
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{
+  width:100%;background:none;border:none;text-align:left;
+  font-family:inherit;font-size:14px;font-weight:600;color:var(--text);
+  padding:14px 0;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;
+  transition:color .15s;
+}
+.faq-q:hover{color:var(--amber)}
+.faq-chevron{
+  color:var(--dim);transition:transform .2s;
+  font-size:18px;line-height:1;flex-shrink:0;
+}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.faq-a-inner{
+  font-size:13px;color:var(--muted);line-height:1.7;
+  padding:4px 0 16px;
+}
+.faq-a-inner code{
+  font-family:monospace;font-size:12px;
+  background:var(--card);border:1px solid var(--border);
+  padding:2px 6px;border-radius:3px;color:var(--text);
+}
+
+/* FOOTER */
+footer{
+  background:var(--panel);
+  border-top:1px solid var(--border);
+  padding:48px 24px 24px;
+}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 2fr;gap:40px;max-width:1100px;margin:0 auto;padding-bottom:32px;border-bottom:1px solid var(--border2)}
+.footer-brand .wordmark{font-size:16px}
+.footer-desc{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.65}
+.footer-heading{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--text)}
+.footer-note{font-size:12px;color:var(--dim);line-height:1.65}
+.footer-bottom{max-width:1100px;margin:24px auto 0;font-size:11px;color:var(--dim)}
+
+/* RESPONSIVE */
+@media(max-width:1023px){
+  .page-wrap{grid-template-columns:1fr;gap:0;padding-top:72px}
+  .sidebar{position:static;display:none}
+  .footer-grid{grid-template-columns:1fr;gap:28px}
+}
+@media(max-width:639px){
+  nav{padding:0 16px}
+  .nav-right .nav-link{display:none}
+  .hamburger{display:flex}
+  .nav-links-mobile.open{
+    display:flex;flex-direction:column;gap:0;
+    position:fixed;top:56px;left:0;right:0;
+    background:var(--panel);border-bottom:1px solid var(--border);
+    padding:8px 0;
+  }
+  .nav-links-mobile a{
+    padding:12px 24px;font-size:14px;color:var(--muted);
+    text-decoration:none;display:block;
+  }
+  .page-wrap{padding:72px 16px 60px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a class="wordmark" href="/">Futures Grid</a>
+    <span class="badge">SIMULATOR</span>
+  </div>
+  <div class="nav-right">
+    <a class="nav-link" href="/blog.html">Blog</a>
+    <a class="nav-link" href="/faq.html" style="color:var(--amber)">FAQ</a>
+    <a class="btn-amber" href="/app.html">Launch Simulator</a>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+<div class="nav-links-mobile" id="mobileMenu">
+  <a href="/blog.html" onclick="closeMenu()">Blog</a>
+  <a href="/faq.html" onclick="closeMenu()">FAQ</a>
+</div>
+
+<!-- PAGE -->
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Contents</div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-link" href="#getting-started">Getting Started</a>
+      <a class="sidebar-link" href="#using-simulator">Using the Simulator</a>
+      <a class="sidebar-link" href="#grid-mechanics">Grid Mechanics</a>
+      <a class="sidebar-link" href="#risk-funding">Risk &amp; Funding</a>
+      <a class="sidebar-link" href="#results">Results Interpretation</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="faq-main">
+    <h1 class="page-title">Frequently Asked Questions</h1>
+    <p class="page-sub">Everything you need to know about running your first simulation and interpreting the results.</p>
+
+    <!-- GETTING STARTED -->
+    <div class="segment" id="getting-started">
+      <div class="segment-heading">Getting Started</div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What is a grid bot?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">A grid bot places a ladder of limit buy and sell orders at fixed price intervals within a defined range. When price drops, a buy fills. When it recovers, the corresponding sell fills. Each completed cycle — one buy and one sell at adjacent levels — captures the spread between them as profit. The bot repeats this automatically as long as price oscillates within the range.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What markets work best for grid bots?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Markets that oscillate within a range rather than trend strongly in one direction. ADX (Average Directional Index) below 20 indicates ranging conditions — the simulator's Market Analysis panel calculates this from live data when you select a market. High-volume, liquid perpetual futures pairs (BTC, ETH, SOL) are the most commonly used. Avoid low-liquidity markets where spreads and slippage will erode returns.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How much capital do I need?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">The minimum is determined by the exchange's minimum order size (typically $5 notional per grid level). With 20 grids at 5× leverage, that requires $20 of margin ($100 notional) at an absolute minimum — but at that scale, fees will dominate. A more realistic starting point is $500–$1,000 margin for a 20-grid setup. The simulator shows a "Notional per grid" figure as you adjust parameters — aim for at least $20 notional per grid for fee ratios to be manageable.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Do I need to understand the maths to use this tool?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">No. The simulator handles all calculations. But understanding the concepts — how liquidation works, what funding drag costs, what profit per round trip means — will help you interpret the results meaningfully. The FAQ and blog articles cover each of these in plain terms.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USING THE SIMULATOR -->
+    <div class="segment" id="using-simulator">
+      <div class="segment-heading">Using the Simulator</div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What's the difference between Monte Carlo and backtest mode?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Monte Carlo generates hundreds of synthetic price paths using your IV (implied volatility) and drift assumptions. It shows you a probability distribution of outcomes — what could happen across a wide range of scenarios. Backtest mode uses real historical OHLCV data that you upload as a CSV. It shows you exactly what would have happened on a specific market during a specific period. Use Monte Carlo for scenario planning; use backtesting for validation against real price history.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Where do I get historical OHLCV data for backtesting?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">The most common sources are Binance (via their data portal at data.binance.vision), TradingView (export from the chart), Bybit, and CoinGecko. Download as CSV in standard OHLCV format (timestamp, open, high, low, close, volume). The simulator auto-detects column order and timestamp format. Aim for at least 90 days of data at 1-hour or 4-hour intervals for a meaningful backtest.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Why does my liquidation price change when I adjust the grid range?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">The liquidation price is calculated from your average entry price, which depends on where your opening position is placed. For a long grid bot, the opening position fills at the entry price going down — so a wider grid range that extends lower changes the average entry, which shifts the liquidation price. Adjusting leverage has the most direct impact on liquidation distance.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What does "shared seed" mean in A/B compare mode?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">When you run two configurations in A/B mode, both simulations use the same underlying random seed — meaning they simulate the exact same price paths. This is intentional: it isolates your configuration change as the only variable. If the seed were different, outcome differences could be caused by random variation rather than the strategy difference you're testing.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Why do I need an even number of grids?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">An odd number of grids creates an ambiguous anchor point — the level closest to the entry price could be either a bid or an ask depending on tiny floating-point differences. An even number guarantees exactly N/2 buy orders below entry and N/2 sell orders above entry with no tie-breaking required. The simulator enforces this automatically.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I save my configuration and come back to it?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Yes. Use the "Saved Configs" panel at the top of the left panel. Give your config a name and it will persist in your browser's localStorage. You can also share a configuration as a URL — use the "Copy link" button in the toolbar. Anyone opening that link will have your exact configuration pre-loaded.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What does the "Copy link" button do?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">It copies a URL to your clipboard that encodes your current configuration as a base64 parameter (<code>?c=...</code>). Anyone opening that link sees the simulator with your exact parameter set pre-loaded. Ephemeral data (live prices, uploaded CSVs) is not included — only the configuration inputs.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRID MECHANICS -->
+    <div class="segment" id="grid-mechanics">
+      <div class="segment-heading">Grid Mechanics</div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What is profit per round trip?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">The profit earned from one complete cycle: a buy order fills, then the corresponding sell order fills at the next level up. For an arithmetic grid, this equals the grid spacing minus the round-trip maker fee cost. The simulator displays this as a dollar amount and a percentage of order size. Break-even oscillations = opening taker cost ÷ profit per round trip.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What's the difference between arithmetic and geometric grid spacing?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Arithmetic spacing places grid levels at equal dollar intervals (e.g. every $500). Geometric spacing places them at equal percentage intervals (e.g. every 0.5%). For tight ranges, arithmetic is simpler. For wide ranges — especially above $10,000 in price — geometric is more appropriate because the same percentage move at $90,000 is a much larger dollar move than at $60,000. Most exchange grid bots default to geometric.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What is a neutral grid?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">A neutral grid runs two independent order books simultaneously — a long book (buy orders below entry) and a short book (sell orders above entry). As price falls, buys fill and open long positions. As price rises, sells fill and open short positions. At entry price, the net position is flat. Neutral grids earn from oscillation without taking a directional bias, but they are more complex: both books have independent liquidation prices and funding exposure.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How does the bot handle the price moving in one direction without oscillating?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">If price trends strongly in one direction and stays there, the bot accumulates a growing open position in the opposite direction. For a long bot in a falling market, this means a large and increasingly underwater long position. The bot continues placing orders but cannot close them until price recovers. This is the primary risk. The TP/SL settings allow you to cap the loss by closing the position if price moves too far against you.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RISK & FUNDING -->
+    <div class="segment" id="risk-funding">
+      <div class="segment-heading">Risk &amp; Funding</div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What is funding rate and why does it matter?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Perpetual futures use a funding mechanism to keep the perpetual price close to the spot price. Every 8 hours (or 1 hour on some exchanges), long positions pay short positions (or vice versa) a small percentage of their notional value. At 0.01% per 8 hours, a $10,000 notional position costs $1 every 8 hours — $1,095 per year. For leveraged grid bots running large notional positions, funding is a significant drag. The simulator models this continuously.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How is the liquidation price calculated?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner"><code>Liq price = avg entry × (1 − 1/leverage + MMR + 2×taker_fee + funding_per_period)</code> for a long position. The key inputs are leverage (lower leverage = further liquidation), maintenance margin rate (exchange-specific, typically 0.5%), and average entry price (which depends on how many grid levels have filled). The simulator shows both a static display estimate and uses a dynamic formula during simulation that accounts for realised P&L shifting as the bot earns.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I lose money even if price stays within the grid range?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Yes, in two scenarios. First, funding drag: if funding rates are high and the simulation runs long enough, cumulative funding payments can exceed grid income. The simulator shows median funding paid alongside median grid P&L so you can see this directly. Second, a neutral grid can accumulate unrealised losses on one book if price drifts to one side of the range and stays there, even without liquidation.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What does break-even oscillations mean?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">For Long and Short bots, opening the initial position costs a taker fee (because market orders are used to open). Break-even oscillations = that opening cost ÷ profit per round trip. If break-even is 12 oscillations and your simulation shows a median of 40 oscillations, you have significant margin before the bot becomes unprofitable purely from a fee perspective. Neutral grids do not have an opening cost (all orders are placed as resting limits), so break-even does not apply.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS INTERPRETATION -->
+    <div class="segment" id="results">
+      <div class="segment-heading">Results Interpretation</div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What does win rate mean for a grid bot?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">The percentage of simulated price paths where the bot ends with positive total P&L (grid income + unrealised position − funding paid). A win rate of 65% means 65% of the 500 simulated scenarios ended in profit. It is not the percentage of individual grid orders that filled profitably — every completed round trip is profitable by construction.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What is Sharpe ratio in this context?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Annualised return divided by annualised standard deviation of daily returns, calculated across all simulated paths. A Sharpe above 1.0 indicates good risk-adjusted returns. Negative Sharpe means the strategy lost money on average. Sharpe is calculated from daily P&L variation across all paths in the simulation, not from a single path.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What does Calmar ratio tell me?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">Annualised median return divided by median maximum drawdown. Higher is better. A Calmar of 2.0 means the strategy returned twice its typical worst peak-to-trough loss on an annualised basis. It is a more intuitive risk measure than Sharpe for strategies with skewed return distributions, which grid bots often have.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Why is P95 PnL so much higher than median?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">The P95 outcome is the 95th percentile — better than 95% of simulated paths. It represents a fortunate scenario where price oscillated frequently within the range and never came close to the grid boundaries. The median is a more reliable planning figure. The gap between median and P95 reflects the range of possible outcomes — a wide gap means high variance in results.</div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What do the fan chart bands represent?
+          <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">The amber line is the median P&L path across all simulations. The blue shaded band is the 10th–90th percentile range — 80% of simulated paths fall within it. The outer band (lighter) covers the 25th–75th percentile range. When price paths are shown, the green line is the best outcome (highest final price), the red line is the worst, and the amber line is the median.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="wordmark" href="/">Futures Grid</a>
+      <span class="badge" style="margin-left:8px">SIMULATOR</span>
+      <p class="footer-desc">A free, client-side grid bot simulator for perpetual futures traders.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Links</div>
+      <ul class="footer-links">
+        <li><a href="/app.html">Simulator</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Privacy</div>
+      <p class="footer-note">Built with no backend. All simulation runs in your browser. Your data never leaves your device.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 Futures Grid Simulator. All rights reserved.</div>
+</footer>
+
+<script>
+function toggleMenu(){
+  const m=document.getElementById('mobileMenu');
+  m.classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// Per-segment accordion — only one open at a time within a segment
+function toggleFaq(btn){
+  const item=btn.closest('.faq-item');
+  const segment=btn.closest('.segment');
+  const answer=item.querySelector('.faq-a');
+  const chevron=btn.querySelector('.faq-chevron');
+  const isOpen=answer.style.maxHeight&&answer.style.maxHeight!=='0px';
+  // close all in segment
+  segment.querySelectorAll('.faq-a').forEach(a=>{a.style.maxHeight='0px'});
+  segment.querySelectorAll('.faq-chevron').forEach(c=>{c.style.transform='';});
+  if(!isOpen){
+    const inner=answer.querySelector('.faq-a-inner');
+    answer.style.maxHeight=inner.scrollHeight+'px';
+    chevron.style.transform='rotate(90deg)';
+  }
+}
+
+// Sidebar active state on scroll
+const segments=document.querySelectorAll('.segment[id]');
+const sidebarLinks=document.querySelectorAll('.sidebar-link');
+function onScroll(){
+  let current='';
+  segments.forEach(s=>{
+    if(window.scrollY>=s.offsetTop-120) current=s.id;
+  });
+  sidebarLinks.forEach(l=>{
+    l.classList.toggle('active',l.getAttribute('href')==='#'+current);
+  });
+}
+window.addEventListener('scroll',onScroll,{passive:true});
+onScroll();
+</script>
+</body>
+</html>
