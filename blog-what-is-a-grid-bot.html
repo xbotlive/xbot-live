@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>How a neutral grid bot earns in sideways markets — Futures Grid Simulator</title>
+<title>How a neutral grid bot earns in sideways markets — xBot</title>
 <meta name="description" content="A neutral grid bot earns by capturing the spread between limit orders as price oscillates. This article explains the mechanics, a worked example, and what can go wrong."/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -111,7 +114,7 @@ footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 2
 
 <nav>
   <div class="nav-left">
-    <a class="wordmark" href="/">Futures Grid</a>
+    <a class="wordmark" href="/"><svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:7px;flex-shrink:0"><rect width="64" height="64" rx="12" fill="#000"/><line x1="14" y1="20" x2="50" y2="20" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="32" x2="50" y2="32" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="44" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="20" x2="14" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="32" y1="20" x2="32" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="50" y1="20" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><circle cx="14" cy="20" r="3" fill="#f0b90b"/><circle cx="50" cy="20" r="3" fill="#f0b90b"/><circle cx="32" cy="32" r="3.5" fill="#f0b90b"/><circle cx="14" cy="44" r="3" fill="#f0b90b"/><circle cx="50" cy="44" r="3" fill="#f0b90b"/><circle cx="32" cy="20" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="14" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="50" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="32" cy="44" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/></svg>xBot</a>
     <span class="badge">SIMULATOR</span>
   </div>
   <div class="nav-right">
@@ -140,15 +143,13 @@ footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 2
 
   <div class="article-body">
 
-    <p>A grid bot is software that automatically places many pre-set buy and sell limit orders on an exchange simultaneously — no manual clicking required. A <strong>neutral</strong> grid bot, specifically, doesn't take a view on price direction. It earns by placing a ladder of those limit orders above and below the current price, then capturing the spread between adjacent levels each time price oscillates through them. No directional forecast required — only oscillation. Directional variants (long and short grids) do carry a directional bias and are covered in <em>Long vs Short vs Neutral grid: when to use each direction</em>.</p>
+    <p>A neutral grid bot doesn't take a view on price direction. It earns by placing a ladder of limit orders above and below the current price, then capturing the spread between adjacent levels each time price oscillates through them. No directional forecast required — only oscillation. Directional variants (long and short grids) do carry a directional bias and are covered in <em>Long vs Short vs Neutral grid: when to use each direction</em>.</p>
 
     <h2>The basic mechanics</h2>
 
     <p>You define a price range and a number of grid levels. The bot divides that range into equal intervals and places a buy order at every level below the current price, and a sell order at every level above it. When price drops and a buy fills, the bot immediately places a sell one level higher. When that sell fills, it places a buy one level lower. Each completed buy–sell cycle is a <strong>round trip</strong>, and each round trip locks in a small profit equal to the grid spacing.</p>
 
     <p>The bot runs continuously. As long as price stays within the range and keeps moving, it keeps collecting round trips. It doesn't need to know whether the next move is up or down — it profits from both.</p>
-
-    <p><strong>Starting inventory.</strong> To place both buy orders below the current price <em>and</em> sell orders above it from the start, a neutral grid needs balanced exposure — roughly half the capital held in the base asset (e.g. BTC) and half in the quote (e.g. USDT). If you start with only USDT, the bot can only place buy orders until price falls far enough for some to fill, leaving the upper half of the grid inactive at launch. On perpetual futures, this is handled through long and short contracts rather than actual asset ownership, but the principle is the same: the bot needs room to act in both directions immediately.</p>
 
     <h2>A worked example</h2>
 
@@ -174,17 +175,13 @@ Net profit per round trip:                             $9.60
 
     <p>Ten oscillations across the range in a day would generate roughly $96. Whether price was net-flat, slightly up, or slightly down over that period is largely irrelevant — the bot earned on the movement itself.</p>
 
-    <h2>Spot vs perpetual futures</h2>
-
-    <p>The example above uses no leverage and could run on a spot market. Running the same grid on <strong>perpetual futures</strong> introduces three additional dimensions. First, leverage: you control larger notional with less capital, which amplifies both gains and losses — and introduces <strong>liquidation risk</strong> if price moves sharply against your open positions. Second, funding rates: periodically (often every 8 hours), a small payment changes hands between longs and shorts based on market conditions; this can drain capital steadily if you're on the wrong side. Third, the capital isn't actually purchasing the asset, so there's no "owning BTC" safety net if price recovers — just a contract position.</p>
-
     <h2>Why sideways markets suit it</h2>
 
     <p>A grid bot's edge is <strong>oscillation frequency</strong>. In a trending market, price moves through the range in one direction and stalls at the boundary. The bot fills all its orders on the way through and ends up fully long (in a rising market) or fully short, sitting idle with no opposite orders left to complete round trips. It holds an open position instead of cycling through trades.</p>
 
     <p>In a sideways or mean-reverting market, price repeatedly crosses the same grid levels, completing round trips continuously. This is why grid bots are often described as volatility-harvesting strategies — they convert price noise into realised profit.</p>
 
-    <p>The ideal regime is one where price oscillates within a band, IV is moderate to high, and the market has no strong directional bias. A market trending hard in either direction is the worst case. The catch: most markets <em>look</em> sideways right up until they break out. Ranges that seem obvious in hindsight were not obvious in real time.</p>
+    <p>The ideal regime is one where price oscillates within a band, IV is moderate to high, and the market has no strong directional bias. A market trending hard in either direction is the worst case.</p>
 
     <h2>Arithmetic vs geometric spacing</h2>
 
@@ -215,9 +212,9 @@ Net profit per round trip:                             $9.60
     <div class="related">
       <div class="related-heading">Related articles</div>
       <div class="related-links">
-        <a href="#">Long vs Short vs Neutral grid: when to use each direction</a>
-        <a href="#">How to size your grid range using historical volatility</a>
-        <a href="#">The hidden cost of grid bots: funding rate drag explained</a>
+        <a href="/blog-long-short-neutral-grid.html">Long vs Short vs Neutral grid: when to use each direction</a>
+        <a href="/blog-grid-range-volatility.html">How to size your grid range using historical volatility</a>
+        <a href="/blog-funding-rate-drag.html">The hidden cost of grid bots: funding rate drag explained</a>
       </div>
     </div>
 
@@ -227,9 +224,9 @@ Net profit per round trip:                             $9.60
 <footer>
   <div class="footer-grid">
     <div>
-      <a class="wordmark" href="/">Futures Grid</a>
+      <a class="wordmark" href="/"><svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:7px;flex-shrink:0"><rect width="64" height="64" rx="12" fill="#000"/><line x1="14" y1="20" x2="50" y2="20" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="32" x2="50" y2="32" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="44" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="20" x2="14" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="32" y1="20" x2="32" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="50" y1="20" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><circle cx="14" cy="20" r="3" fill="#f0b90b"/><circle cx="50" cy="20" r="3" fill="#f0b90b"/><circle cx="32" cy="32" r="3.5" fill="#f0b90b"/><circle cx="14" cy="44" r="3" fill="#f0b90b"/><circle cx="50" cy="44" r="3" fill="#f0b90b"/><circle cx="32" cy="20" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="14" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="50" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="32" cy="44" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/></svg>xBot</a>
       <span class="badge" style="margin-left:8px">SIMULATOR</span>
-      <p class="footer-desc">A free, client-side grid bot simulator for perpetual futures traders.</p>
+      <p class="footer-desc">A free, client-side grid bot simulator for perpetual futures traders. No sign-up, no backend.</p>
     </div>
     <div>
       <div class="footer-heading">Links</div>
@@ -244,7 +241,7 @@ Net profit per round trip:                             $9.60
       <p class="footer-note">Built with no backend. All simulation runs in your browser. Your data never leaves your device.</p>
     </div>
   </div>
-  <div class="footer-bottom">© 2025 Futures Grid Simulator. All rights reserved.</div>
+  <div class="footer-bottom">© 2025 xBot. All rights reserved.</div>
 </footer>
 
 <script>
