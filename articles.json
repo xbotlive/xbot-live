@@ -6,7 +6,7 @@
     "tag": "Fundamentals",
     "readTime": "5 min read",
     "description": "A neutral grid bot earns by capturing the spread between limit orders as price oscillates. Learn the mechanics, a worked example, and what can go wrong.",
-    "publishedAt": "2025-07-01"
+    "publishedAt": "2025-12-18"
   },
   {
     "slug": "blog-long-short-neutral-grid",
@@ -15,7 +15,7 @@
     "tag": "Strategy",
     "readTime": "5 min read",
     "description": "Grid direction determines your exposure when price trends, how funding affects you, and which regimes suit the strategy. Here's how to choose.",
-    "publishedAt": "2025-07-03"
+    "publishedAt": "2025-12-22"
   },
   {
     "slug": "blog-grid-range-volatility",
@@ -24,7 +24,7 @@
     "tag": "Strategy",
     "readTime": "6 min read",
     "description": "Too narrow and price breaks out. Too wide and fills are infrequent. Here's how to use realised volatility to set a range that holds.",
-    "publishedAt": "2025-07-07"
+    "publishedAt": "2025-12-29"
   },
   {
     "slug": "blog-funding-rate-drag",
@@ -33,7 +33,7 @@
     "tag": "Risk",
     "readTime": "6 min read",
     "description": "Funding accrues silently on open positions every 8 hours. Here's how to calculate it and whether it will consume your grid income.",
-    "publishedAt": "2025-07-10"
+    "publishedAt": "2026-01-05"
   },
   {
     "slug": "blog-how-to-backtest",
@@ -42,7 +42,7 @@
     "tag": "Walkthrough",
     "readTime": "7 min read",
     "description": "A step-by-step walkthrough of running a historical backtest — from sourcing OHLCV data to interpreting the results.",
-    "publishedAt": "2025-07-14"
+    "publishedAt": "2026-01-12"
   },
   {
     "slug": "blog-monte-carlo-results",
@@ -51,7 +51,7 @@
     "tag": "Walkthrough",
     "readTime": "6 min read",
     "description": "The fan chart, percentile bands, Sharpe, Calmar, win rate — what each metric in the Monte Carlo output actually tells you and how to use it.",
-    "publishedAt": "2025-07-17"
+    "publishedAt": "2026-01-19"
   },
   {
     "slug": "blog-liquidation",
@@ -60,7 +60,7 @@
     "tag": "Risk",
     "readTime": "7 min read",
     "description": "Liquidation on a grid bot shifts constantly as orders fill and open contracts accumulate. Here's how to calculate it and why the danger zone is closer than most traders expect.",
-    "publishedAt": "2025-07-21"
+    "publishedAt": "2026-01-26"
   },
   {
     "slug": "blog-how-many-grids",
@@ -69,7 +69,7 @@
     "tag": "Strategy",
     "readTime": "6 min read",
     "description": "More grids means more fills — until fees eat the profit. Here's how to find the right grid count for your range, capital, and fee rate.",
-    "publishedAt": "2025-07-24"
+    "publishedAt": "2026-02-02"
   },
   {
     "slug": "blog-arithmetic-vs-geometric",
@@ -78,7 +78,7 @@
     "tag": "Strategy",
     "readTime": "5 min read",
     "description": "Arithmetic grids earn a fixed dollar amount per round trip. Geometric grids earn a fixed percentage. The difference matters most over wide ranges and volatile assets.",
-    "publishedAt": "2025-07-28"
+    "publishedAt": "2026-02-06"
   },
   {
     "slug": "blog-market-regime",
@@ -87,7 +87,7 @@
     "tag": "Risk",
     "readTime": "6 min read",
     "description": "A grid bot deployed into a trending market will lose money reliably. Here's how to identify the regimes that suit a grid strategy and the signals that say wait.",
-    "publishedAt": "2025-07-31"
+    "publishedAt": "2026-02-10"
   },
   {
     "slug": "blog-leverage",
@@ -96,7 +96,7 @@
     "tag": "Strategy",
     "readTime": "6 min read",
     "description": "Leverage amplifies both income and liquidation risk. Here's how to calculate the right leverage for your range, capital, and risk tolerance.",
-    "publishedAt": "2025-08-04"
+    "publishedAt": "2026-02-17"
   },
   {
     "slug": "blog-backtest-pitfalls",
@@ -105,6 +105,6 @@
     "tag": "Backtest",
     "readTime": "7 min read",
     "description": "A backtest on one period is not validation. Here are the four ways grid bot backtests systematically flatter the strategy — and how to stress-test against each one.",
-    "publishedAt": "2025-08-07"
+    "publishedAt": "2026-02-24"
   }
 ]
