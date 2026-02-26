@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Blog — Futures Grid Simulator</title>
+<meta name="description" content="Articles on grid bot strategy, risk management, and perpetual futures trading."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000000;--panel:#111111;--card:#1a1a1a;--border:#333333;
+  --border2:#222222;--text:#ffffff;--muted:#999999;--dim:#666666;
+  --green:#00c853;--red:#ff1744;--amber:#f0b90b;--blue:#4b8ded;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--text);line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--panel);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-left{display:flex;align-items:center;gap:10px}
+.wordmark{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.01em;text-decoration:none}
+.badge{font-size:10px;color:var(--blue);background:rgba(75,141,237,0.09);padding:3px 9px;border-radius:4px;font-weight:600;letter-spacing:.05em}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-link{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.btn-amber{background:var(--amber);color:#000;border:none;border-radius:5px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:opacity .15s}
+.btn-amber:hover{opacity:.85}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--muted)}
+.nav-links-mobile{display:none}
+
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px;text-align:center;}
+.hero-content{max-width:560px}
+.coming-badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.2);padding:4px 12px;border-radius:3px;margin-bottom:24px;}
+.hero h1{font-size:36px;font-weight:700;letter-spacing:-0.02em;margin-bottom:16px}
+.hero-sub{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:36px}
+.topics{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:40px}
+.topic{font-size:12px;color:var(--dim);background:var(--card);border:1px solid var(--border);padding:5px 12px;border-radius:3px;}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text);border-radius:5px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:border-color .15s}
+.btn-ghost:hover{border-color:var(--muted)}
+
+footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 24px 24px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 2fr;gap:40px;max-width:1100px;margin:0 auto;padding-bottom:32px;border-bottom:1px solid var(--border2)}
+.footer-desc{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.65}
+.footer-heading{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--text)}
+.footer-note{font-size:12px;color:var(--dim);line-height:1.65}
+.footer-bottom{max-width:1100px;margin:24px auto 0;font-size:11px;color:var(--dim)}
+
+@media(max-width:639px){
+  nav{padding:0 16px}
+  .nav-right .nav-link{display:none}
+  .hamburger{display:flex}
+  .nav-links-mobile.open{display:flex;flex-direction:column;position:fixed;top:56px;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:8px 0;}
+  .nav-links-mobile a{padding:12px 24px;font-size:14px;color:var(--muted);text-decoration:none;display:block;}
+  .footer-grid{grid-template-columns:1fr;gap:28px}
+  .hero h1{font-size:26px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-left">
+    <a class="wordmark" href="/">Futures Grid</a>
+    <span class="badge">SIMULATOR</span>
+  </div>
+  <div class="nav-right">
+    <a class="nav-link" href="/blog.html" style="color:var(--amber)">Blog</a>
+    <a class="nav-link" href="/faq.html">FAQ</a>
+    <a class="btn-amber" href="/app.html">Launch Simulator</a>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+<div class="nav-links-mobile" id="mobileMenu">
+  <a href="/blog.html" onclick="closeMenu()">Blog</a>
+  <a href="/faq.html" onclick="closeMenu()">FAQ</a>
+</div>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="coming-badge">Coming soon</div>
+    <h1>Articles on grid bot strategy and risk</h1>
+    <p class="hero-sub">In-depth guides on configuration, liquidation mechanics, funding drag, and interpreting simulation results — written for traders who want to understand what they're running.</p>
+    <div class="topics">
+      <span class="topic">Grid configuration</span>
+      <span class="topic">Liquidation mechanics</span>
+      <span class="topic">Funding rate drag</span>
+      <span class="topic">Monte Carlo interpretation</span>
+      <span class="topic">A/B strategy comparison</span>
+      <span class="topic">Market regime detection</span>
+    </div>
+    <a class="btn-ghost" href="/app.html">Try the simulator now</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="wordmark" href="/">Futures Grid</a>
+      <span class="badge" style="margin-left:8px">SIMULATOR</span>
+      <p class="footer-desc">A free, client-side grid bot simulator for perpetual futures traders.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Links</div>
+      <ul class="footer-links">
+        <li><a href="/app.html">Simulator</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Privacy</div>
+      <p class="footer-note">Built with no backend. All simulation runs in your browser. Your data never leaves your device.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 Futures Grid Simulator. All rights reserved.</div>
+</footer>
+
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')}
+</script>
+</body>
+</html>
