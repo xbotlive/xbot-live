@@ -70,5 +70,32 @@
     "readTime": "6 min read",
     "description": "More grids means more fills — until fees eat the profit. Here's how to find the right grid count for your range, capital, and fee rate.",
     "publishedAt": "2025-07-24"
+  },
+  {
+    "slug": "blog-arithmetic-vs-geometric",
+    "url": "/blog-arithmetic-vs-geometric.html",
+    "title": "Arithmetic vs geometric grid spacing: which is right for your setup",
+    "tag": "Strategy",
+    "readTime": "5 min read",
+    "description": "Arithmetic grids earn a fixed dollar amount per round trip. Geometric grids earn a fixed percentage. The difference matters most over wide ranges and volatile assets.",
+    "publishedAt": "2025-07-28"
+  },
+  {
+    "slug": "blog-market-regime",
+    "url": "/blog-market-regime.html",
+    "title": "Market regime detection: when to deploy a grid bot and when to wait",
+    "tag": "Risk",
+    "readTime": "6 min read",
+    "description": "A grid bot deployed into a trending market will lose money reliably. Here's how to identify the regimes that suit a grid strategy and the signals that say wait.",
+    "publishedAt": "2025-07-31"
+  },
+  {
+    "slug": "blog-leverage",
+    "url": "/blog-leverage.html",
+    "title": "What leverage to use on a perpetual futures grid bot",
+    "tag": "Strategy",
+    "readTime": "6 min read",
+    "description": "Leverage amplifies both income and liquidation risk. Here's how to calculate the right leverage for your range, capital, and risk tolerance.",
+    "publishedAt": "2025-08-04"
   }
 ]

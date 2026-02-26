@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Market regime detection: when to deploy a grid bot and when to wait — Futures Grid Simulator</title>
+<meta name="description" content="A grid bot deployed into a trending market will lose money reliably. Here's how to identify the regimes that suit a grid strategy and the signals that say wait."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#000000;--panel:#111111;--card:#1a1a1a;--border:#333333;--border2:#222222;--text:#ffffff;--muted:#999999;--dim:#666666;--green:#00c853;--red:#ff1744;--amber:#f0b90b;--blue:#4b8ded;}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--text);line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--panel);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-left{display:flex;align-items:center;gap:10px}
+.wordmark{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.01em;text-decoration:none}
+.badge{font-size:10px;color:var(--blue);background:rgba(75,141,237,0.09);padding:3px 9px;border-radius:4px;font-weight:600;letter-spacing:.05em}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-link{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.btn-amber{background:var(--amber);color:#000;border:none;border-radius:5px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:opacity .15s}
+.btn-amber:hover{opacity:.85}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--muted)}
+.nav-links-mobile{display:none}
+.article-wrap{max-width:720px;margin:0 auto;padding:96px 24px 80px;}
+.article-tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.2);padding:3px 10px;border-radius:3px;margin-bottom:20px;}
+.article-title{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;margin-bottom:16px}
+.article-meta{font-size:12px;color:var(--dim);margin-bottom:48px;display:flex;gap:16px;align-items:center}
+.article-body h2{font-size:20px;font-weight:700;margin:48px 0 14px;letter-spacing:-0.01em}
+.article-body p{font-size:15px;color:#cccccc;line-height:1.75;margin-bottom:18px}
+.article-body strong{color:var(--text);font-weight:600}
+.article-body pre{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:20px 24px;margin:24px 0;overflow-x:auto;font-family:'Menlo','Monaco','Courier New',monospace;font-size:13px;color:#cccccc;line-height:1.7;}
+.article-body table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}
+.article-body th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding:8px 12px;border-bottom:1px solid var(--border)}
+.article-body td{padding:10px 12px;border-bottom:1px solid var(--border2);color:#cccccc}
+.article-body tr:last-child td{border-bottom:none}
+.article-body td:first-child{color:var(--text);font-weight:500}
+.callout-try{background:rgba(240,185,11,0.06);border:1px solid rgba(240,185,11,0.25);border-radius:8px;padding:20px 24px;margin:48px 0 32px;}
+.callout-try p{color:var(--muted);margin-bottom:10px;font-size:14px}
+.callout-try .callout-title{font-size:13px;font-weight:700;color:var(--amber);margin-bottom:8px;letter-spacing:.03em}
+.callout-try a{color:var(--amber);font-weight:600;text-decoration:none}
+.callout-try a:hover{text-decoration:underline}
+.callout-warning{background:rgba(255,23,68,0.06);border:1px solid rgba(255,23,68,0.2);border-radius:8px;padding:16px 20px;margin:24px 0;font-size:14px;color:#ffb3be;line-height:1.65;}
+.callout-warning strong{color:var(--red)}
+.callout-note{background:rgba(75,141,237,0.06);border:1px solid rgba(75,141,237,0.2);border-radius:8px;padding:16px 20px;margin:24px 0;font-size:14px;color:#93c5fd;line-height:1.65;}
+.callout-note strong{color:var(--blue)}
+.related{border-top:1px solid var(--border);padding-top:32px;margin-top:48px}
+.related-heading{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
+.related-links{display:flex;flex-direction:column;gap:10px}
+.related-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s}
+.related-links a:hover{color:var(--text)}
+footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 24px 24px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 2fr;gap:40px;max-width:1100px;margin:0 auto;padding-bottom:32px;border-bottom:1px solid var(--border2)}
+.footer-desc{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.65}
+.footer-heading{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--text)}
+.footer-note{font-size:12px;color:var(--dim);line-height:1.65}
+.footer-bottom{max-width:1100px;margin:24px auto 0;font-size:11px;color:var(--dim)}
+@media(max-width:639px){
+  nav{padding:0 16px}.nav-right .nav-link{display:none}.hamburger{display:flex}
+  .nav-links-mobile.open{display:flex;flex-direction:column;position:fixed;top:56px;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:8px 0;}
+  .nav-links-mobile a{padding:12px 24px;font-size:14px;color:var(--muted);text-decoration:none;display:block;}
+  .footer-grid{grid-template-columns:1fr;gap:28px}.article-title{font-size:26px}.article-body pre{font-size:12px;padding:16px}.article-body table{font-size:12px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-left">
+    <a class="wordmark" href="/">Futures Grid</a>
+    <span class="badge">SIMULATOR</span>
+  </div>
+  <div class="nav-right">
+    <a class="nav-link" href="/blog.html" style="color:var(--amber)">Blog</a>
+    <a class="nav-link" href="/faq.html">FAQ</a>
+    <a class="btn-amber" href="/app.html">Launch Simulator</a>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+<div class="nav-links-mobile" id="mobileMenu">
+  <a href="/blog.html" onclick="closeMenu()">Blog</a>
+  <a href="/faq.html" onclick="closeMenu()">FAQ</a>
+</div>
+
+<div class="article-wrap">
+  <div class="article-tag">Risk</div>
+  <h1 class="article-title">Market regime detection: when to deploy a grid bot and when to wait</h1>
+  <div class="article-meta">
+    <span>6 min read</span>
+    <span>·</span>
+    <span>Risk</span>
+  </div>
+
+  <div class="article-body">
+
+    <p>A grid bot deployed into the wrong market regime will lose money no matter how well it is configured. Range, grid count, leverage, and fee optimisation all become irrelevant if price is trending strongly in one direction. Regime detection is not about predicting the future — it is about avoiding conditions that are structurally hostile to the strategy.</p>
+
+    <h2>The two regimes that matter</h2>
+
+    <p>For a grid bot, market conditions fall into two broad categories. A <strong>ranging regime</strong> is one where price oscillates within a band without establishing a persistent directional trend. Price may move significantly intraday but mean-reverts over days or weeks. This is the environment a grid bot is built for — it earns on every oscillation and the range stays intact.</p>
+
+    <p>A <strong>trending regime</strong> is one where price makes higher highs and higher lows (uptrend) or lower lows and lower highs (downtrend) over the time horizon of the trade. In a trend, the grid bot fills all its orders on one side, reaches the range boundary, and stops trading. It then holds a fully exposed directional position — exactly what it was never designed to manage.</p>
+
+    <p>There is also a third, less-discussed regime: <strong>low-volatility consolidation</strong>. Price is not trending but is also not oscillating meaningfully. It sits in a very tight band, barely crossing grid levels. The bot is technically in the right environment but earns very little because fill frequency is low. This is not dangerous, but it is unproductive.</p>
+
+    <h2>ADX: measuring trend strength</h2>
+
+    <p>The <strong>Average Directional Index (ADX)</strong> measures the strength of a trend without indicating its direction. It runs from 0 to 100. A high ADX means price is trending strongly in whatever direction it is moving. A low ADX means price is ranging or directionless. ADX does not tell you whether the trend is up or down — only whether a trend exists.</p>
+
+<pre>
+ADX interpretation for grid bot deployment:
+
+  ADX &lt; 20        Weak or no trend — ranging conditions
+                  → Suitable for grid deployment
+
+  ADX 20 – 25     Transitional — trend may be forming or fading
+                  → Proceed cautiously; monitor closely
+
+  ADX 25 – 40     Moderate trend
+                  → Avoid new grid deployment
+
+  ADX &gt; 40        Strong trend
+                  → Do not deploy; close existing grids if range is at risk
+</pre>
+
+    <p>ADX is a lagging indicator — it reflects what has happened, not what is about to happen. A market with ADX of 18 can develop a strong trend within days. The reading is a current snapshot, not a forecast. Use it as a gate condition, not a guarantee.</p>
+
+    <h2>Realised volatility: the fill-frequency signal</h2>
+
+    <p>ADX tells you about trend. Realised volatility tells you about oscillation. For a grid bot, you want volatility that is high enough to generate regular fills but not so extreme that a single move blows through the entire range in one session.</p>
+
+    <p>The simulator's Market Analysis panel displays 7-day, 30-day, and 90-day annualised realised vol. A useful rule of thumb:</p>
+
+<pre>
+Realised vol and grid bot suitability:
+
+  Ann. vol &lt; 30%    Low oscillation — infrequent fills, low income
+                    → Deploy only if patient; widen spacing
+
+  Ann. vol 30–80%   Normal crypto ranging regime
+                    → Core deployment zone for most grid setups
+
+  Ann. vol 80–120%  Elevated — range needs to be wide to contain moves
+                    → Deploy with caution; use vol-based range sizing
+
+  Ann. vol &gt; 120%   Extreme — single-session moves may breach any range
+                    → Wait; market is in a volatile trending or shock regime
+</pre>
+
+    <h2>Using both signals together</h2>
+
+    <p>ADX and realised vol answer different questions and are most useful in combination. A market can have high vol but low ADX — lots of movement but no sustained direction. That is the ideal grid bot environment. A market with high ADX and high vol is trending hard and volatile — the worst case. Low ADX and low vol is the low-income consolidation scenario.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ADX</th>
+          <th>Realised vol</th>
+          <th>Regime</th>
+          <th>Grid bot verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>&lt; 20</td>
+          <td>30–80%</td>
+          <td>Ranging, active</td>
+          <td>Deploy — ideal conditions</td>
+        </tr>
+        <tr>
+          <td>&lt; 20</td>
+          <td>&lt; 30%</td>
+          <td>Ranging, quiet</td>
+          <td>Deploy — expect low income</td>
+        </tr>
+        <tr>
+          <td>20–25</td>
+          <td>40–80%</td>
+          <td>Transitional</td>
+          <td>Proceed cautiously, narrow range</td>
+        </tr>
+        <tr>
+          <td>&gt; 25</td>
+          <td>Any</td>
+          <td>Trending</td>
+          <td>Wait — do not deploy</td>
+        </tr>
+        <tr>
+          <td>Any</td>
+          <td>&gt; 120%</td>
+          <td>Volatile/shock</td>
+          <td>Wait — range will not hold</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>What to do at the boundaries</h2>
+
+    <p>The harder decision is not whether to deploy in a clear trend or a clear range — it is what to do when a deployed grid bot is running and the regime changes. ADX rising above 25 while the bot is live is a signal to review, not necessarily to close. The relevant question is whether the current price is still within the range and whether the trend has enough momentum to push price outside it before the trade horizon ends.</p>
+
+    <p>One practical approach: set a manual stop condition. If ADX crosses 30 while the bot is running, check whether price is within 10% of the range boundary. If it is, consider closing. If price is still near the mid-point of the range and the trend appears shallow, hold and monitor. Regime changes do not always invalidate an ongoing trade — they raise the probability of the range being breached.</p>
+
+    <div class="callout-warning">
+      <strong>Warning:</strong> the most common cause of grid bot liquidation is not a configuration error at deployment — it is a regime change after deployment that pushes price through the range boundary and into the liquidation zone. Check ADX weekly on any live grid.
+    </div>
+
+    <h2>The simulator's Market Analysis panel</h2>
+
+    <p>The Market Analysis panel in the simulator displays the current ADX reading, 30-day realised vol, and a regime classification label — Ranging, Transitional, or Trending — based on those inputs. It also shows the 30-day high/low range and the vol-based range suggestion. These are provided as inputs to your decision, not as instructions. The panel updates when you upload new OHLCV data via the Backtest tab.</p>
+
+    <div class="callout-try">
+      <div class="callout-title">Try it in the simulator</div>
+      <p>Upload a 90-day OHLCV file covering a period you know included a significant trend move. Check the ADX reading the simulator displays and compare the Monte Carlo outcome with a file from a quieter ranging period using the same configuration.</p>
+      <a href="/app.html">Launch the simulator →</a>
+    </div>
+
+    <div class="related">
+      <div class="related-heading">Related articles</div>
+      <div class="related-links">
+        <a href="/blog-grid-range-volatility.html">How to size your grid range using historical volatility</a>
+        <a href="/blog-liquidation.html">How grid bot liquidation actually works — and how to calculate your price</a>
+        <a href="/blog-long-short-neutral-grid.html">Long vs Short vs Neutral grid: when to use each direction</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="wordmark" href="/">Futures Grid</a>
+      <span class="badge" style="margin-left:8px">SIMULATOR</span>
+      <p class="footer-desc">A free, client-side grid bot simulator for perpetual futures traders.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Links</div>
+      <ul class="footer-links">
+        <li><a href="/app.html">Simulator</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Privacy</div>
+      <p class="footer-note">Built with no backend. All simulation runs in your browser. Your data never leaves your device.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 Futures Grid Simulator. All rights reserved.</div>
+</footer>
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')}
+</script>
+</body>
+</html>
