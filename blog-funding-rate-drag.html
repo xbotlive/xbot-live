@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The hidden cost of grid bots: funding rate drag explained — Futures Grid Simulator</title>
+<meta name="description" content="Funding doesn't show up on any individual trade. It accrues silently on open positions every 8 hours. Here's how to calculate it and whether it will kill your setup."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#000000;--panel:#111111;--card:#1a1a1a;--border:#333333;--border2:#222222;--text:#ffffff;--muted:#999999;--dim:#666666;--green:#00c853;--red:#ff1744;--amber:#f0b90b;--blue:#4b8ded;}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--text);line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--panel);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-left{display:flex;align-items:center;gap:10px}
+.wordmark{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.01em;text-decoration:none}
+.badge{font-size:10px;color:var(--blue);background:rgba(75,141,237,0.09);padding:3px 9px;border-radius:4px;font-weight:600;letter-spacing:.05em}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-link{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.btn-amber{background:var(--amber);color:#000;border:none;border-radius:5px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:opacity .15s}
+.btn-amber:hover{opacity:.85}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--muted)}
+.nav-links-mobile{display:none}
+.article-wrap{max-width:720px;margin:0 auto;padding:96px 24px 80px;}
+.article-tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.2);padding:3px 10px;border-radius:3px;margin-bottom:20px;}
+.article-title{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;margin-bottom:16px}
+.article-meta{font-size:12px;color:var(--dim);margin-bottom:48px;display:flex;gap:16px;align-items:center}
+.article-body h2{font-size:20px;font-weight:700;margin:48px 0 14px;letter-spacing:-0.01em}
+.article-body p{font-size:15px;color:#cccccc;line-height:1.75;margin-bottom:18px}
+.article-body strong{color:var(--text);font-weight:600}
+.article-body pre{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:20px 24px;margin:24px 0;overflow-x:auto;font-family:'Menlo','Monaco','Courier New',monospace;font-size:13px;color:#cccccc;line-height:1.7;}
+.article-body table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}
+.article-body th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding:8px 12px;border-bottom:1px solid var(--border)}
+.article-body td{padding:10px 12px;border-bottom:1px solid var(--border2);color:#cccccc}
+.article-body tr:last-child td{border-bottom:none}
+.article-body td:first-child{color:var(--text);font-weight:500}
+.callout-try{background:rgba(240,185,11,0.06);border:1px solid rgba(240,185,11,0.25);border-radius:8px;padding:20px 24px;margin:48px 0 32px;}
+.callout-try p{color:var(--muted);margin-bottom:10px;font-size:14px}
+.callout-try .callout-title{font-size:13px;font-weight:700;color:var(--amber);margin-bottom:8px;letter-spacing:.03em}
+.callout-try a{color:var(--amber);font-weight:600;text-decoration:none}
+.callout-try a:hover{text-decoration:underline}
+.callout-warning{background:rgba(255,23,68,0.06);border:1px solid rgba(255,23,68,0.2);border-radius:8px;padding:16px 20px;margin:24px 0;font-size:14px;color:#ffb3be;line-height:1.65;}
+.callout-warning strong{color:var(--red)}
+.related{border-top:1px solid var(--border);padding-top:32px;margin-top:48px}
+.related-heading{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
+.related-links{display:flex;flex-direction:column;gap:10px}
+.related-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s}
+.related-links a:hover{color:var(--text)}
+footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 24px 24px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 2fr;gap:40px;max-width:1100px;margin:0 auto;padding-bottom:32px;border-bottom:1px solid var(--border2)}
+.footer-desc{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.65}
+.footer-heading{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--text)}
+.footer-note{font-size:12px;color:var(--dim);line-height:1.65}
+.footer-bottom{max-width:1100px;margin:24px auto 0;font-size:11px;color:var(--dim)}
+@media(max-width:639px){
+  nav{padding:0 16px}.nav-right .nav-link{display:none}.hamburger{display:flex}
+  .nav-links-mobile.open{display:flex;flex-direction:column;position:fixed;top:56px;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:8px 0;}
+  .nav-links-mobile a{padding:12px 24px;font-size:14px;color:var(--muted);text-decoration:none;display:block;}
+  .footer-grid{grid-template-columns:1fr;gap:28px}.article-title{font-size:26px}.article-body pre{font-size:12px;padding:16px}.article-body table{font-size:12px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-left">
+    <a class="wordmark" href="/">Futures Grid</a>
+    <span class="badge">SIMULATOR</span>
+  </div>
+  <div class="nav-right">
+    <a class="nav-link" href="/blog.html" style="color:var(--amber)">Blog</a>
+    <a class="nav-link" href="/faq.html">FAQ</a>
+    <a class="btn-amber" href="/app.html">Launch Simulator</a>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+<div class="nav-links-mobile" id="mobileMenu">
+  <a href="/blog.html" onclick="closeMenu()">Blog</a>
+  <a href="/faq.html" onclick="closeMenu()">FAQ</a>
+</div>
+
+<div class="article-wrap">
+  <div class="article-tag">Risk</div>
+  <h1 class="article-title">The hidden cost of grid bots: funding rate drag explained</h1>
+  <div class="article-meta">
+    <span>6 min read</span>
+    <span>·</span>
+    <span>Risk</span>
+  </div>
+
+  <div class="article-body">
+
+    <p>Funding doesn't appear as a loss on any individual trade. It accrues quietly on open positions every 8 hours, regardless of whether the bot is active, regardless of P&amp;L, and regardless of how many round trips it has completed. In the right setup funding is negligible. In the wrong one it will consume your grid income entirely.</p>
+
+    <h2>How perpetual futures funding works</h2>
+
+    <p>Perpetual futures have no expiry date, so they use a funding mechanism to keep the contract price anchored to the spot price. Every 8 hours (on most exchanges), the funding rate is calculated based on the premium between the perp price and the spot index. When the perp trades above spot, the rate is positive and longs pay shorts. When the perp trades below spot, the rate is negative and shorts pay longs.</p>
+
+    <p>The payment is calculated on the <strong>notional value of the open position</strong>, not the margin. On a $10,000 position at 5× leverage, the notional value is $50,000. A funding rate of 0.01% per 8 hours costs $5.00 every 8 hours — $15 per day, $450 per month.</p>
+
+    <h2>Why this matters for grid bots specifically</h2>
+
+    <p>A spot trading grid bot has no funding exposure. A perpetual futures grid bot always has open positions — that is the nature of the strategy. Buy orders that have filled but whose corresponding sells have not yet completed represent an open long. Unfilled sell orders that have been placed represent potential future shorts. As price oscillates, positions open and close, but there is almost always a net open position of some size.</p>
+
+    <p>For a long grid, the net open position is long from the moment of deployment. For a neutral grid, the net position starts near zero but grows in whichever direction price moves. A neutral grid with price near the bottom of the range can be carrying a substantial net long — and paying funding on all of it.</p>
+
+    <h2>Worked example: 0.01% vs 0.05% per 8 hours</h2>
+
+    <p>Setup: $10,000 capital, 5× leverage, $50,000 notional. Long grid. Funding paid every 8 hours on the full notional.</p>
+
+<pre>
+Funding rate: 0.01% per 8h
+
+  Per payment:   $50,000 × 0.0001  =  $5.00
+  Per day:       $5.00 × 3          =  $15.00
+  Per month:     $15.00 × 30        =  $450
+  Annualised:    0.01% × 3 × 365    =  10.95%
+
+Funding rate: 0.05% per 8h
+
+  Per payment:   $50,000 × 0.0005  =  $25.00
+  Per day:       $25.00 × 3         =  $75.00
+  Per month:     $75.00 × 30        =  $2,250
+  Annualised:    0.05% × 3 × 365    =  54.75%
+</pre>
+
+    <p>At 0.01% per 8 hours, funding costs roughly 11% of notional annually — significant but potentially outweighed by grid income in an active market. At 0.05% per 8 hours, funding costs 55% of notional annually. A grid bot would need to generate over $2,250 per month in round trip income just to break even on a $10,000 position. That is a very high bar.</p>
+
+    <h2>What rates are typical</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>8h funding rate</th>
+          <th>Annualised cost (longs)</th>
+          <th>Assessment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>0.00% – 0.01%</td>
+          <td>0% – 11%</td>
+          <td>Low drag, grid income typically sufficient</td>
+        </tr>
+        <tr>
+          <td>0.01% – 0.03%</td>
+          <td>11% – 33%</td>
+          <td>Meaningful — model carefully before deploying</td>
+        </tr>
+        <tr>
+          <td>0.03% – 0.05%</td>
+          <td>33% – 55%</td>
+          <td>Elevated — long grids face serious carry drag</td>
+        </tr>
+        <tr>
+          <td>&gt; 0.05%</td>
+          <td>&gt; 55%</td>
+          <td>High — long grid income unlikely to cover it</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>The neutral grid trap</h2>
+
+    <p>Neutral grids are often described as funding-neutral. This is only true at the exact mid-point of the range. As price moves toward either boundary, one book accumulates exposure and the net position grows. A neutral grid with price at the lower 20% of its range may be carrying a net long position equivalent to a fully deployed long grid — paying full funding on that exposure while still being described as "neutral."</p>
+
+    <p>The simulator accounts for this by computing funding on the actual net open position at each time step, not a fixed notional. This is why the Monte Carlo results for a neutral grid often show a wider spread of outcomes than expected: funding drag varies significantly depending on which direction price moves.</p>
+
+    <div class="callout-warning">
+      <strong>Warning:</strong> funding rates above 0.03% per 8 hours will exceed the grid income of most conservative long grid setups. Check the current rate before deploying and set an IV assumption in the simulator that matches the prevailing regime.
+    </div>
+
+    <h2>Mitigating funding drag</h2>
+
+    <p>The most direct mitigation is choosing direction based on the funding regime. When funding is persistently positive, a short grid receives funding rather than paying it — the carry becomes income rather than a cost. When funding is near zero or negative, direction becomes less constrained by carry considerations.</p>
+
+    <p>Reducing leverage reduces the notional position size and therefore the absolute funding payment. A 2× leveraged position pays less than a 5× leveraged position for the same capital deployed. The grid income also changes with leverage, so the net effect depends on the setup — the simulator lets you compare directly.</p>
+
+    <div class="callout-try">
+      <div class="callout-title">Try it in the simulator</div>
+      <p>Set the funding rate to 0.01%, run a 30-day Monte Carlo, then change it to 0.05% and compare the P50 outcome and win rate. The difference is usually larger than traders expect.</p>
+      <a href="/app.html">Launch the simulator →</a>
+    </div>
+
+    <div class="related">
+      <div class="related-heading">Related articles</div>
+      <div class="related-links">
+        <a href="/blog-long-short-neutral-grid.html">Long vs Short vs Neutral grid: when to use each direction</a>
+        <a href="/blog-what-is-a-grid-bot.html">How a neutral grid bot earns in sideways markets</a>
+        <a href="/blog-monte-carlo-results.html">Reading your Monte Carlo results: what the percentile bands mean</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="wordmark" href="/">Futures Grid</a>
+      <span class="badge" style="margin-left:8px">SIMULATOR</span>
+      <p class="footer-desc">A free, client-side grid bot simulator for perpetual futures traders.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Links</div>
+      <ul class="footer-links">
+        <li><a href="/app.html">Simulator</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Privacy</div>
+      <p class="footer-note">Built with no backend. All simulation runs in your browser. Your data never leaves your device.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 Futures Grid Simulator. All rights reserved.</div>
+</footer>
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')}
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Blog — Futures Grid Simulator</title>
-<meta name="description" content="Articles on grid bot strategy, risk management, and perpetual futures trading."/>
+<meta name="description" content="Articles on grid bot strategy, risk management, and perpetual futures trading — written for traders who want to understand what they're running."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -17,6 +17,7 @@
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--text);line-height:1.6}
+
 nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--panel);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;}
 .nav-left{display:flex;align-items:center;gap:10px}
 .wordmark{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.01em;text-decoration:none}
@@ -29,15 +30,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--panel);bord
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--muted)}
 .nav-links-mobile{display:none}
 
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px;text-align:center;}
-.hero-content{max-width:560px}
-.coming-badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.2);padding:4px 12px;border-radius:3px;margin-bottom:24px;}
-.hero h1{font-size:36px;font-weight:700;letter-spacing:-0.02em;margin-bottom:16px}
-.hero-sub{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:36px}
-.topics{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:40px}
-.topic{font-size:12px;color:var(--dim);background:var(--card);border:1px solid var(--border);padding:5px 12px;border-radius:3px;}
-.btn-ghost{background:none;border:1px solid var(--border);color:var(--text);border-radius:5px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:border-color .15s}
-.btn-ghost:hover{border-color:var(--muted)}
+/* PAGE */
+.page-wrap{max-width:800px;margin:0 auto;padding:88px 24px 80px;}
+
+.page-header{margin-bottom:48px;padding-bottom:32px;border-bottom:1px solid var(--border)}
+.page-title{font-family:'Playfair Display',Georgia,serif;font-size:34px;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px}
+.page-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:520px}
+
+/* FILTER TABS */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:32px}
+.filter-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:4px;padding:5px 13px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s}
+.filter-btn:hover{color:var(--text);border-color:var(--muted)}
+.filter-btn.active{background:var(--amber);border-color:var(--amber);color:#000;font-weight:600}
+
+/* ARTICLE CARDS */
+.articles-grid{display:flex;flex-direction:column;gap:1px;background:var(--border2)}
+.article-card{background:var(--bg);padding:24px 0;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;text-decoration:none;transition:background .15s;border-bottom:1px solid var(--border2)}
+.article-card:hover{background:var(--panel)}
+.article-card:hover .article-card-title{color:var(--amber)}
+.article-card:last-child{border-bottom:none}
+.article-card-tag{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.article-card-title{font-size:17px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:8px;transition:color .15s;letter-spacing:-0.01em}
+.article-card-desc{font-size:13px;color:var(--muted);line-height:1.65}
+.article-card-meta{font-size:11px;color:var(--dim);white-space:nowrap;padding-top:4px}
+
+.no-results{padding:40px 0;font-size:14px;color:var(--dim);text-align:center}
 
 footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 24px 24px;}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 2fr;gap:40px;max-width:1100px;margin:0 auto;padding-bottom:32px;border-bottom:1px solid var(--border2)}
@@ -56,11 +73,14 @@ footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 2
   .nav-links-mobile.open{display:flex;flex-direction:column;position:fixed;top:56px;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:8px 0;}
   .nav-links-mobile a{padding:12px 24px;font-size:14px;color:var(--muted);text-decoration:none;display:block;}
   .footer-grid{grid-template-columns:1fr;gap:28px}
-  .hero h1{font-size:26px}
+  .page-title{font-size:26px}
+  .article-card{grid-template-columns:1fr}
+  .article-card-meta{display:none}
 }
 </style>
 </head>
 <body>
+
 <nav>
   <div class="nav-left">
     <a class="wordmark" href="/">Futures Grid</a>
@@ -80,22 +100,25 @@ footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 2
   <a href="/faq.html" onclick="closeMenu()">FAQ</a>
 </div>
 
-<section class="hero">
-  <div class="hero-content">
-    <div class="coming-badge">Coming soon</div>
-    <h1>Articles on grid bot strategy and risk</h1>
-    <p class="hero-sub">In-depth guides on configuration, liquidation mechanics, funding drag, and interpreting simulation results — written for traders who want to understand what they're running.</p>
-    <div class="topics">
-      <span class="topic">Grid configuration</span>
-      <span class="topic">Liquidation mechanics</span>
-      <span class="topic">Funding rate drag</span>
-      <span class="topic">Monte Carlo interpretation</span>
-      <span class="topic">A/B strategy comparison</span>
-      <span class="topic">Market regime detection</span>
-    </div>
-    <a class="btn-ghost" href="/app.html">Try the simulator now</a>
+<div class="page-wrap">
+  <div class="page-header">
+    <h1 class="page-title">Articles</h1>
+    <p class="page-sub">In-depth guides on configuration, risk, and interpreting simulation results — written for traders who want to understand what they're running.</p>
   </div>
-</section>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-tag="All" onclick="filterArticles('All')">All</button>
+    <button class="filter-btn" data-tag="Fundamentals" onclick="filterArticles('Fundamentals')">Fundamentals</button>
+    <button class="filter-btn" data-tag="Strategy" onclick="filterArticles('Strategy')">Strategy</button>
+    <button class="filter-btn" data-tag="Risk" onclick="filterArticles('Risk')">Risk</button>
+    <button class="filter-btn" data-tag="Walkthrough" onclick="filterArticles('Walkthrough')">Walkthrough</button>
+    <button class="filter-btn" data-tag="Backtest" onclick="filterArticles('Backtest')">Backtest</button>
+  </div>
+
+  <div class="articles-grid" id="articlesGrid">
+    <div style="padding:32px 0;font-size:13px;color:var(--dim)">Loading articles…</div>
+  </div>
+</div>
 
 <footer>
   <div class="footer-grid">
@@ -123,6 +146,59 @@ footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 2
 <script>
 function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
 function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')}
+
+let allArticles = [];
+let activeTag = 'All';
+
+function formatDate(iso){
+  return new Date(iso).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+
+function renderArticles(articles){
+  const grid = document.getElementById('articlesGrid');
+  if(!articles.length){
+    grid.innerHTML = '<div class="no-results">No articles in this category yet.</div>';
+    return;
+  }
+  grid.innerHTML = articles.map(a => `
+    <a class="article-card" href="${a.url}">
+      <div>
+        <div class="article-card-tag">${a.tag}</div>
+        <div class="article-card-title">${a.title}</div>
+        <div class="article-card-desc">${a.description}</div>
+      </div>
+      <div class="article-card-meta">${a.readTime}<br><span style="color:var(--dim)">${formatDate(a.publishedAt)}</span></div>
+    </a>
+  `).join('');
+}
+
+function filterArticles(tag){
+  activeTag = tag;
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tag === tag);
+  });
+  const filtered = tag === 'All' ? allArticles : allArticles.filter(a => a.tag === tag);
+  renderArticles(filtered);
+}
+
+fetch('/articles.json')
+  .then(r => r.json())
+  .then(data => {
+    allArticles = data;
+    renderArticles(allArticles);
+  })
+  .catch(() => {
+    // Fallback: render inline if fetch fails (e.g. file:// protocol)
+    allArticles = [
+      {url:'/blog-what-is-a-grid-bot.html',title:'How a neutral grid bot earns in sideways markets',tag:'Fundamentals',readTime:'5 min read',description:'A neutral grid bot earns by capturing the spread between limit orders as price oscillates. Learn the mechanics, a worked example, and what can go wrong.',publishedAt:'2025-07-01'},
+      {url:'/blog-long-short-neutral-grid.html',title:'Long vs Short vs Neutral grid: when to use each direction',tag:'Strategy',readTime:'5 min read',description:'Grid direction determines your exposure when price trends, how funding affects you, and which regimes suit the strategy. Here\'s how to choose.',publishedAt:'2025-07-03'},
+      {url:'/blog-grid-range-volatility.html',title:'How to size your grid range using historical volatility',tag:'Strategy',readTime:'6 min read',description:'Too narrow and price breaks out. Too wide and fills are infrequent. Here\'s how to use realised volatility to set a range that holds.',publishedAt:'2025-07-07'},
+      {url:'/blog-funding-rate-drag.html',title:'The hidden cost of grid bots: funding rate drag explained',tag:'Risk',readTime:'6 min read',description:'Funding accrues silently on open positions every 8 hours. Here\'s how to calculate it and whether it will consume your grid income.',publishedAt:'2025-07-10'},
+      {url:'/blog-how-to-backtest.html',title:'How to backtest a grid strategy before deploying capital',tag:'Walkthrough',readTime:'7 min read',description:'A step-by-step walkthrough of running a historical backtest — from sourcing OHLCV data to interpreting the results.',publishedAt:'2025-07-14'},
+      {url:'/blog-monte-carlo-results.html',title:'Reading your Monte Carlo results: what the percentile bands mean',tag:'Walkthrough',readTime:'6 min read',description:'The fan chart, percentile bands, Sharpe, Calmar, win rate — what each metric in the Monte Carlo output actually tells you.',publishedAt:'2025-07-17'}
+    ];
+    renderArticles(allArticles);
+  });
 </script>
 </body>
 </html>

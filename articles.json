@@ -1,0 +1,56 @@
+[
+  {
+    "slug": "blog-what-is-a-grid-bot",
+    "url": "/blog-what-is-a-grid-bot.html",
+    "title": "How a neutral grid bot earns in sideways markets",
+    "tag": "Fundamentals",
+    "readTime": "5 min read",
+    "description": "A neutral grid bot earns by capturing the spread between limit orders as price oscillates. Learn the mechanics, a worked example, and what can go wrong.",
+    "publishedAt": "2025-07-01"
+  },
+  {
+    "slug": "blog-long-short-neutral-grid",
+    "url": "/blog-long-short-neutral-grid.html",
+    "title": "Long vs Short vs Neutral grid: when to use each direction",
+    "tag": "Strategy",
+    "readTime": "5 min read",
+    "description": "Grid direction determines your exposure when price trends, how funding affects you, and which regimes suit the strategy. Here's how to choose.",
+    "publishedAt": "2025-07-03"
+  },
+  {
+    "slug": "blog-grid-range-volatility",
+    "url": "/blog-grid-range-volatility.html",
+    "title": "How to size your grid range using historical volatility",
+    "tag": "Strategy",
+    "readTime": "6 min read",
+    "description": "Too narrow and price breaks out. Too wide and fills are infrequent. Here's how to use realised volatility to set a range that holds.",
+    "publishedAt": "2025-07-07"
+  },
+  {
+    "slug": "blog-funding-rate-drag",
+    "url": "/blog-funding-rate-drag.html",
+    "title": "The hidden cost of grid bots: funding rate drag explained",
+    "tag": "Risk",
+    "readTime": "6 min read",
+    "description": "Funding accrues silently on open positions every 8 hours. Here's how to calculate it and whether it will consume your grid income.",
+    "publishedAt": "2025-07-10"
+  },
+  {
+    "slug": "blog-how-to-backtest",
+    "url": "/blog-how-to-backtest.html",
+    "title": "How to backtest a grid strategy before deploying capital",
+    "tag": "Walkthrough",
+    "readTime": "7 min read",
+    "description": "A step-by-step walkthrough of running a historical backtest — from sourcing OHLCV data to interpreting the results.",
+    "publishedAt": "2025-07-14"
+  },
+  {
+    "slug": "blog-monte-carlo-results",
+    "url": "/blog-monte-carlo-results.html",
+    "title": "Reading your Monte Carlo results: what the percentile bands mean",
+    "tag": "Walkthrough",
+    "readTime": "6 min read",
+    "description": "The fan chart, percentile bands, Sharpe, Calmar, win rate — what each metric in the Monte Carlo output actually tells you and how to use it.",
+    "publishedAt": "2025-07-17"
+  }
+]
