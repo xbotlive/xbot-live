@@ -49,31 +49,25 @@ nav{
 
 /* LAYOUT */
 .page-wrap{
-  max-width:1100px;
+  max-width:860px;
   margin:0 auto;
-  padding:80px 24px 80px 280px;
+  padding:80px 24px 80px;
 }
 
-/* SIDEBAR */
-.sidebar{
-  position:fixed;
-  top:76px;
-  left:50%;
-  margin-left:-550px;
-  width:200px;
+/* SIDEBAR - removed */
+.sidebar{display:none}
+
+/* SECTION NAV */
+.section-nav{
+  display:flex;flex-wrap:wrap;gap:8px;
+  margin-bottom:48px;
 }
-.sidebar-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
-.sidebar-nav{display:flex;flex-direction:column;gap:0}
-.sidebar-link{
+.section-nav a{
   font-size:12px;color:var(--muted);text-decoration:none;
-  padding:6px 0 6px 12px;
-  border-left:2px solid transparent;
-  transition:color .15s,border-color .15s,padding .1s;
-  display:block;
-  line-height:1.4;
+  padding:5px 12px;border:1px solid var(--border);border-radius:3px;
+  transition:color .15s,border-color .15s;
 }
-.sidebar-link:hover{color:var(--text)}
-.sidebar-link.active{color:var(--amber);border-left-color:var(--amber);padding-left:10px}
+.section-nav a:hover{color:var(--text);border-color:var(--muted)}
 
 /* MAIN CONTENT */
 .faq-main{}
@@ -183,17 +177,14 @@ footer{
 <!-- PAGE -->
 <div class="page-wrap">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-label">Contents</div>
-    <nav class="sidebar-nav">
-      <a class="sidebar-link" href="#getting-started">Getting Started</a>
-      <a class="sidebar-link" href="#using-simulator">Using the Simulator</a>
-      <a class="sidebar-link" href="#grid-mechanics">Grid Mechanics</a>
-      <a class="sidebar-link" href="#risk-funding">Risk &amp; Funding</a>
-      <a class="sidebar-link" href="#results">Results Interpretation</a>
-    </nav>
-  </aside>
+  <!-- SECTION NAV -->
+  <nav class="section-nav">
+    <a href="#getting-started">Getting Started</a>
+    <a href="#using-simulator">Using the Simulator</a>
+    <a href="#grid-mechanics">Grid Mechanics</a>
+    <a href="#risk-funding">Risk &amp; Funding</a>
+    <a href="#results">Results Interpretation</a>
+  </nav>
 
   <!-- MAIN -->
   <main class="faq-main">
