@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>How many grids should you run? The spacing vs fill-frequency trade-off — Futures Grid Simulator</title>
+<meta name="description" content="More grids means tighter spacing and more fills — up to the point where fees eat the profit. Here's how to find the right grid count for your range, capital, and fee rate."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#000000;--panel:#111111;--card:#1a1a1a;--border:#333333;--border2:#222222;--text:#ffffff;--muted:#999999;--dim:#666666;--green:#00c853;--red:#ff1744;--amber:#f0b90b;--blue:#4b8ded;}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--text);line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--panel);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-left{display:flex;align-items:center;gap:10px}
+.wordmark{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.01em;text-decoration:none}
+.badge{font-size:10px;color:var(--blue);background:rgba(75,141,237,0.09);padding:3px 9px;border-radius:4px;font-weight:600;letter-spacing:.05em}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-link{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.btn-amber{background:var(--amber);color:#000;border:none;border-radius:5px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:opacity .15s}
+.btn-amber:hover{opacity:.85}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--muted)}
+.nav-links-mobile{display:none}
+.article-wrap{max-width:720px;margin:0 auto;padding:96px 24px 80px;}
+.article-tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.2);padding:3px 10px;border-radius:3px;margin-bottom:20px;}
+.article-title{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;margin-bottom:16px}
+.article-meta{font-size:12px;color:var(--dim);margin-bottom:48px;display:flex;gap:16px;align-items:center}
+.article-body h2{font-size:20px;font-weight:700;margin:48px 0 14px;letter-spacing:-0.01em}
+.article-body p{font-size:15px;color:#cccccc;line-height:1.75;margin-bottom:18px}
+.article-body strong{color:var(--text);font-weight:600}
+.article-body pre{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:20px 24px;margin:24px 0;overflow-x:auto;font-family:'Menlo','Monaco','Courier New',monospace;font-size:13px;color:#cccccc;line-height:1.7;}
+.article-body table{width:100%;border-collapse:collapse;margin:24px 0;font-size:14px}
+.article-body th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding:8px 12px;border-bottom:1px solid var(--border)}
+.article-body td{padding:10px 12px;border-bottom:1px solid var(--border2);color:#cccccc}
+.article-body tr:last-child td{border-bottom:none}
+.article-body td:first-child{color:var(--text);font-weight:500}
+.callout-try{background:rgba(240,185,11,0.06);border:1px solid rgba(240,185,11,0.25);border-radius:8px;padding:20px 24px;margin:48px 0 32px;}
+.callout-try p{color:var(--muted);margin-bottom:10px;font-size:14px}
+.callout-try .callout-title{font-size:13px;font-weight:700;color:var(--amber);margin-bottom:8px;letter-spacing:.03em}
+.callout-try a{color:var(--amber);font-weight:600;text-decoration:none}
+.callout-try a:hover{text-decoration:underline}
+.callout-warning{background:rgba(255,23,68,0.06);border:1px solid rgba(255,23,68,0.2);border-radius:8px;padding:16px 20px;margin:24px 0;font-size:14px;color:#ffb3be;line-height:1.65;}
+.callout-warning strong{color:var(--red)}
+.callout-note{background:rgba(75,141,237,0.06);border:1px solid rgba(75,141,237,0.2);border-radius:8px;padding:16px 20px;margin:24px 0;font-size:14px;color:#93c5fd;line-height:1.65;}
+.callout-note strong{color:var(--blue)}
+.related{border-top:1px solid var(--border);padding-top:32px;margin-top:48px}
+.related-heading{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
+.related-links{display:flex;flex-direction:column;gap:10px}
+.related-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s}
+.related-links a:hover{color:var(--text)}
+footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 24px 24px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 2fr;gap:40px;max-width:1100px;margin:0 auto;padding-bottom:32px;border-bottom:1px solid var(--border2)}
+.footer-desc{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.65}
+.footer-heading{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--text)}
+.footer-note{font-size:12px;color:var(--dim);line-height:1.65}
+.footer-bottom{max-width:1100px;margin:24px auto 0;font-size:11px;color:var(--dim)}
+@media(max-width:639px){
+  nav{padding:0 16px}.nav-right .nav-link{display:none}.hamburger{display:flex}
+  .nav-links-mobile.open{display:flex;flex-direction:column;position:fixed;top:56px;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:8px 0;}
+  .nav-links-mobile a{padding:12px 24px;font-size:14px;color:var(--muted);text-decoration:none;display:block;}
+  .footer-grid{grid-template-columns:1fr;gap:28px}.article-title{font-size:26px}.article-body pre{font-size:12px;padding:16px}.article-body table{font-size:12px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-left">
+    <a class="wordmark" href="/">Futures Grid</a>
+    <span class="badge">SIMULATOR</span>
+  </div>
+  <div class="nav-right">
+    <a class="nav-link" href="/blog.html" style="color:var(--amber)">Blog</a>
+    <a class="nav-link" href="/faq.html">FAQ</a>
+    <a class="btn-amber" href="/app.html">Launch Simulator</a>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+<div class="nav-links-mobile" id="mobileMenu">
+  <a href="/blog.html" onclick="closeMenu()">Blog</a>
+  <a href="/faq.html" onclick="closeMenu()">FAQ</a>
+</div>
+
+<div class="article-wrap">
+  <div class="article-tag">Strategy</div>
+  <h1 class="article-title">How many grids should you run? The spacing vs fill-frequency trade-off</h1>
+  <div class="article-meta">
+    <span>6 min read</span>
+    <span>·</span>
+    <span>Strategy</span>
+  </div>
+
+  <div class="article-body">
+
+    <p>More grids means tighter spacing, which means more fills per unit of price movement. That sounds strictly better — until the spacing gets so tight that fees consume the profit on every round trip. Grid count has a hard ceiling set by your fee rate, and a soft ceiling set by your capital. Getting either wrong is one of the most reliable ways to run a grid bot at a loss.</p>
+
+    <h2>What grid count actually controls</h2>
+
+    <p>Given a fixed price range, grid count determines two things: the <strong>spacing between levels</strong> and the <strong>order size per level</strong>. With the same capital deployed across more grids, each individual order is smaller. With fewer grids, each order is larger but fills happen less frequently.</p>
+
+    <p>This is a genuine trade-off with no universally correct answer. The right grid count depends on how much price is expected to move, how tight the fee structure is, and how much capital is available per level to keep order sizes above the exchange's minimum notional.</p>
+
+    <h2>The fee floor: the hard lower limit on spacing</h2>
+
+    <p>Every round trip costs two maker fees — one on the buy fill, one on the sell fill. For a round trip to be profitable, the grid spacing must exceed those combined fees as a percentage of price. If spacing equals fees, every round trip breaks even. If spacing is below fees, every round trip loses money — and more fills means faster losses.</p>
+
+<pre>
+Fee floor formula:
+
+  Minimum spacing (%) = 2 × maker fee rate
+
+Example with 0.02% maker fee:
+  Minimum spacing = 2 × 0.02% = 0.04% of price
+
+At BTC $100,000:
+  Minimum spacing = $100,000 × 0.0004 = $40 per grid level
+
+Maximum grids within a $10,000 range ($95,000 – $105,000):
+  Max grids = $10,000 range ÷ $40 minimum spacing = 250 grids
+
+This is a theoretical ceiling. In practice, spacing should be
+several multiples of the fee floor to leave meaningful profit
+per round trip after slippage and spread.
+</pre>
+
+    <p>A practical rule: grid spacing should be at least <strong>5× the combined fee rate</strong> to produce a worthwhile net profit per round trip. At 0.02% maker fee on both sides, that means spacing of at least 0.2% of price. At $100,000 BTC, that is $200 minimum spacing — and a maximum of 50 grids across a $10,000 range.</p>
+
+    <h2>The capital floor: the soft lower limit on grid count</h2>
+
+    <p>Exchanges impose a minimum notional value per order — typically $5–$10 USDT equivalent. With fixed capital and more grids, each order gets smaller. Once order size drops below the exchange minimum, the bot cannot place all its orders and the configuration breaks.</p>
+
+<pre>
+Capital floor formula:
+
+  Min order notional = exchange minimum (e.g. $5)
+  Max grids = (capital × leverage) ÷ min order notional
+
+Example:
+  Capital:    $1,000
+  Leverage:   3×
+  Notional:   $3,000
+  Min order:  $5
+
+  Max grids = $3,000 ÷ $5 = 600
+
+At $1,000 capital and 1× leverage:
+  Max grids = $1,000 ÷ $5 = 200
+
+Small accounts with no leverage hit this ceiling quickly
+on wide ranges with many grids.
+</pre>
+
+    <h2>A practical sizing table</h2>
+
+    <p>The table below shows how grid count, spacing, and net profit per round trip relate for a 10% range on BTC at $100,000, with 0.02% maker fee and $1,000 order size per level.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Grid count</th>
+          <th>Spacing</th>
+          <th>Spacing %</th>
+          <th>Gross per RT</th>
+          <th>Fee cost per RT</th>
+          <th>Net per RT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>10 grids</td>
+          <td>$1,000</td>
+          <td>1.00%</td>
+          <td>$10.00</td>
+          <td>$0.40</td>
+          <td>$9.60</td>
+        </tr>
+        <tr>
+          <td>20 grids</td>
+          <td>$500</td>
+          <td>0.50%</td>
+          <td>$5.00</td>
+          <td>$0.40</td>
+          <td>$4.60</td>
+        </tr>
+        <tr>
+          <td>50 grids</td>
+          <td>$200</td>
+          <td>0.20%</td>
+          <td>$2.00</td>
+          <td>$0.40</td>
+          <td>$1.60</td>
+        </tr>
+        <tr>
+          <td>100 grids</td>
+          <td>$100</td>
+          <td>0.10%</td>
+          <td>$1.00</td>
+          <td>$0.40</td>
+          <td>$0.60</td>
+        </tr>
+        <tr>
+          <td>200 grids</td>
+          <td>$50</td>
+          <td>0.05%</td>
+          <td>$0.50</td>
+          <td>$0.40</td>
+          <td>$0.10</td>
+        </tr>
+        <tr>
+          <td>250 grids</td>
+          <td>$40</td>
+          <td>0.04%</td>
+          <td>$0.40</td>
+          <td>$0.40</td>
+          <td>$0.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>At 200 grids, the net profit per round trip is $0.10 — technically positive, but fragile. Any slippage, spread widening, or taker fill wipes it out. At 50 grids the profit per round trip is meaningful, and 20 grids gives a comfortable margin. Fewer grids, larger profit per fill, lower fill frequency — but total income depends on how often price oscillates across each level, not just how tight the grid is.</p>
+
+    <h2>High volatility vs low volatility regimes</h2>
+
+    <p>In a high-volatility environment, price moves more per day and crosses more grid levels. Tighter grids capture those moves more granularly. In a low-volatility environment, price moves less and a tighter grid may simply sit idle most of the time — the fills never materialise to justify the narrower spacing.</p>
+
+    <p>A practical approach: in high-vol regimes, more grids across the same range can increase total income by capturing small oscillations that wider grids miss. In low-vol regimes, fewer grids with wider spacing preserves meaningful profit per fill even if fill frequency drops. The simulator's Market Analysis panel shows the current vol regime — use it to calibrate grid count alongside range.</p>
+
+    <div class="callout-note">
+      <strong>Note:</strong> the simulator displays a "profit per round trip" figure and a warning when grid spacing is too tight relative to fees. If the warning fires, reduce grid count before running a Monte Carlo — the results will be misleading if every simulated round trip is loss-making at the fee level.
+    </div>
+
+    <h2>A starting point for most setups</h2>
+
+<pre>
+Conservative default (prioritise profit per fill):
+  Grid count:  10 – 20
+  Spacing:     0.5% – 1.0% of price
+  Best for:    Low-to-medium vol, wide range, small capital
+
+Balanced (standard starting point):
+  Grid count:  20 – 50
+  Spacing:     0.2% – 0.5% of price
+  Best for:    Medium vol, standard range, adequate capital
+
+Aggressive (high fill frequency):
+  Grid count:  50 – 100
+  Spacing:     0.1% – 0.2% of price
+  Best for:    High vol, tight range, larger capital, low fees
+  Risk:        Thin margin per fill — fee creep wipes profit quickly
+</pre>
+
+    <div class="callout-try">
+      <div class="callout-title">Try it in the simulator</div>
+      <p>Set a fixed range and capital, then vary grid count from 10 to 100. Watch how the profit per round trip and the warnings panel change — the point at which the fee warning appears is your hard upper limit.</p>
+      <a href="/app.html">Launch the simulator →</a>
+    </div>
+
+    <div class="related">
+      <div class="related-heading">Related articles</div>
+      <div class="related-links">
+        <a href="/blog-grid-range-volatility.html">How to size your grid range using historical volatility</a>
+        <a href="/blog-what-is-a-grid-bot.html">How a neutral grid bot earns in sideways markets</a>
+        <a href="/blog-funding-rate-drag.html">The hidden cost of grid bots: funding rate drag explained</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="wordmark" href="/">Futures Grid</a>
+      <span class="badge" style="margin-left:8px">SIMULATOR</span>
+      <p class="footer-desc">A free, client-side grid bot simulator for perpetual futures traders.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Links</div>
+      <ul class="footer-links">
+        <li><a href="/app.html">Simulator</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Privacy</div>
+      <p class="footer-note">Built with no backend. All simulation runs in your browser. Your data never leaves your device.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 Futures Grid Simulator. All rights reserved.</div>
+</footer>
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')}
+</script>
+</body>
+</html>

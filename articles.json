@@ -52,5 +52,23 @@
     "readTime": "6 min read",
     "description": "The fan chart, percentile bands, Sharpe, Calmar, win rate — what each metric in the Monte Carlo output actually tells you and how to use it.",
     "publishedAt": "2025-07-17"
+  },
+  {
+    "slug": "blog-liquidation",
+    "url": "/blog-liquidation.html",
+    "title": "How grid bot liquidation actually works — and how to calculate your price",
+    "tag": "Risk",
+    "readTime": "7 min read",
+    "description": "Liquidation on a grid bot shifts constantly as orders fill and open contracts accumulate. Here's how to calculate it and why the danger zone is closer than most traders expect.",
+    "publishedAt": "2025-07-21"
+  },
+  {
+    "slug": "blog-how-many-grids",
+    "url": "/blog-how-many-grids.html",
+    "title": "How many grids should you run? The spacing vs fill-frequency trade-off",
+    "tag": "Strategy",
+    "readTime": "6 min read",
+    "description": "More grids means more fills — until fees eat the profit. Here's how to find the right grid count for your range, capital, and fee rate.",
+    "publishedAt": "2025-07-24"
   }
 ]
