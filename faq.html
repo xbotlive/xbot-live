@@ -72,8 +72,8 @@ nav{
 
 /* MAIN CONTENT */
 .faq-main{}
-.page-title{font-size:26px;font-weight:700;letter-spacing:-0.01em;margin-bottom:8px}
-.page-sub{font-size:13px;color:var(--muted);margin-bottom:56px}
+.page-title{font-family:'Playfair Display',Georgia,serif;font-size:34px;font-weight:700;letter-spacing:-0.02em;margin-bottom:10px}
+.page-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:520px;margin-bottom:0}
 
 /* SEGMENT */
 .segment{margin-bottom:56px}
@@ -189,8 +189,10 @@ footer{
 
   <!-- MAIN -->
   <main class="faq-main">
+    <div style="margin-bottom:48px;padding-bottom:32px;border-bottom:1px solid var(--border)">
     <h1 class="page-title">Frequently Asked Questions</h1>
     <p class="page-sub">Everything you need to run your first simulation and read the results properly.</p>
+    </div>
 
     <!-- GETTING STARTED -->
     <div class="segment" id="getting-started">
@@ -257,7 +259,7 @@ footer{
           <span class="faq-chevron">›</span>
         </button>
         <div class="faq-a">
-          <div class="faq-a-inner">Common sources include exchanges and data aggregators. The file should be a standard CSV with timestamp, open, high, low, close, and volume columns.<br><br>Aim for at least <strong>90 days</strong> of data if you want the result to mean anything. 1-hour or 4-hour candles are a sensible starting point for most grid tests. More data usually gives a more honest picture.</div>
+          <div class="faq-a-inner">Common sources include Binance (data.binance.vision), TradingView (export from the chart), Bybit, and CoinGecko. The file should be a standard CSV with timestamp, open, high, low, close, and volume columns.<br><br>Aim for at least <strong>90 days</strong> of data if you want the result to mean anything. 1-hour or 4-hour candles are a sensible starting point for most grid tests. More data usually gives a more honest picture.</div>
         </div>
       </div>
 
