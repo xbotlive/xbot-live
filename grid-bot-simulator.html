@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Crypto Grid Bot Simulator — Test Before You Trade | xBot</title>
+<meta name="description" content="A free crypto grid bot simulator for perpetual futures. Run Monte Carlo simulations and historical backtests on your grid strategy before deploying real capital."/>
+<link rel="canonical" href="https://www.xbot.live/grid-bot-simulator.html"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://www.xbot.live/grid-bot-simulator.html"/>
+<meta property="og:title" content="Crypto Grid Bot Simulator — Test Before You Trade | xBot"/>
+<meta property="og:description" content="A free crypto grid bot simulator for perpetual futures. Run Monte Carlo simulations and historical backtests on your grid strategy before deploying real capital."/>
+<meta property="og:site_name" content="xBot"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:site" content="@xbot_live"/>
+<meta name="twitter:title" content="Crypto Grid Bot Simulator — Test Before You Trade | xBot"/>
+<meta name="twitter:description" content="A free crypto grid bot simulator for perpetual futures. Run Monte Carlo simulations and historical backtests on your grid strategy before deploying real capital."/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "xBot Grid Bot Simulator",
+  "url": "https://www.xbot.live/app.html",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "description": "A free crypto grid bot simulator for perpetual futures. Monte Carlo simulation, historical backtesting, and live market data — all in the browser.",
+  "publisher": {"@type": "Organization", "name": "xBot", "url": "https://www.xbot.live"}
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000000;--panel:#111111;--card:#1a1a1a;--border:#333333;
+  --border2:#222222;--text:#ffffff;--muted:#999999;--dim:#666666;
+  --green:#00c853;--red:#ff1744;--amber:#f0b90b;--blue:#4b8ded;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--text);line-height:1.6}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--panel);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-left{display:flex;align-items:center;gap:10px}
+.wordmark{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.01em;text-decoration:none}
+.badge{font-size:10px;color:var(--blue);background:rgba(75,141,237,0.09);padding:3px 9px;border-radius:4px;font-weight:600;letter-spacing:.05em}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-link{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.btn-amber{background:var(--amber);color:#000;border:none;border-radius:5px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:opacity .15s}
+.btn-amber:hover{opacity:.85}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--muted)}
+.nav-links-mobile{display:none}
+
+/* HERO */
+.hero{min-height:88vh;display:flex;align-items:center;justify-content:center;padding:80px 24px 60px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(75,141,237,0.03) 1px, transparent 1px),linear-gradient(90deg, rgba(75,141,237,0.03) 1px, transparent 1px);background-size:48px 48px;}
+.hero-content{position:relative;text-align:center;max-width:700px;width:100%}
+.hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--amber);text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-size:48px;font-weight:700;line-height:1.15;letter-spacing:-0.02em;margin-bottom:20px;color:var(--text);}
+.hero h1 em{font-style:normal;color:var(--amber)}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.65;margin-bottom:36px;max-width:560px;margin-left:auto;margin-right:auto;}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
+.btn-amber-lg{background:var(--amber);color:#000;border:none;border-radius:5px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;font-family:inherit;transition:opacity .15s;display:inline-block;}
+.btn-amber-lg:hover{opacity:.85}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text);border-radius:5px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:border-color .15s;}
+.btn-ghost:hover{border-color:var(--muted)}
+.trust-chips{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.chip{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:5px}
+.chip::before{content:"⬡";color:var(--amber);font-size:10px}
+
+/* SECTIONS */
+section{padding:80px 24px}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-inner.narrow{max-width:760px}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--amber);text-transform:uppercase;margin-bottom:12px}
+.section-title{font-size:28px;font-weight:700;letter-spacing:-0.01em;margin-bottom:16px}
+.section-body{font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:40px;max-width:680px}
+
+/* WHAT IS section */
+#what{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.prose{font-size:14px;color:var(--muted);line-height:1.8}
+.prose p{margin-bottom:16px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text)}
+
+/* EXAMPLE BOX */
+.example-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px}
+.example-heading{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
+.example-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border2);font-size:13px}
+.example-row:last-child{border-bottom:none}
+.example-label{color:var(--dim)}
+.example-value{color:var(--text);font-weight:500;font-variant-numeric:tabular-nums}
+.example-value.green{color:var(--green)}
+.example-value.amber{color:var(--amber)}
+.example-value.red{color:var(--red)}
+.example-note{font-size:12px;color:var(--dim);margin-top:14px;line-height:1.6;padding-top:14px;border-top:1px solid var(--border2)}
+
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;margin-bottom:32px}
+.step{display:flex;flex-direction:column;gap:10px}
+.step-num{width:32px;height:32px;border-radius:50%;background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.3);color:var(--amber);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-title{font-size:14px;font-weight:600;color:var(--text)}
+.step-body{font-size:13px;color:var(--muted);line-height:1.65}
+.risk-box{background:rgba(255,23,68,0.06);border:1px solid rgba(255,23,68,0.2);border-radius:6px;padding:16px 20px;font-size:13px;color:var(--muted);line-height:1.65;}
+.risk-box strong{color:var(--red)}
+
+/* MODES */
+#modes{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.modes-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.mode-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px}
+.mode-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.mode-label.neutral{color:var(--blue)}
+.mode-label.long{color:var(--green)}
+.mode-label.short{color:var(--red)}
+.mode-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px}
+.mode-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.mode-when{font-size:12px;color:var(--dim);padding-top:12px;border-top:1px solid var(--border2)}
+.mode-when strong{color:var(--muted)}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;display:flex;gap:14px;align-items:flex-start}
+.feature-icon{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(240,185,11,0.08);border:1px solid rgba(240,185,11,0.15)}
+.feature-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
+.feature-body{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* CTA BANNER */
+#cta{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center}
+.cta-title{font-size:26px;font-weight:700;letter-spacing:-0.01em;margin-bottom:12px}
+.cta-sub{font-size:15px;color:var(--muted);margin-bottom:28px}
+
+/* RELATED */
+.related-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.related-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;transition:border-color .15s}
+.related-card:hover{border-color:var(--amber)}
+.related-tag{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.related-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:6px}
+.related-desc{font-size:12px;color:var(--muted);line-height:1.55}
+
+/* FOOTER */
+footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 24px 24px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1100px;margin:0 auto;padding-bottom:32px;border-bottom:1px solid var(--border2)}
+.footer-brand .wordmark{font-size:16px}
+.footer-desc{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.65}
+.footer-heading{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--text)}
+.footer-note{font-size:12px;color:var(--dim);line-height:1.65}
+.footer-bottom{max-width:1100px;margin:24px auto 0;font-size:11px;color:var(--dim)}
+
+/* RESPONSIVE */
+@media(max-width:1023px){
+  .two-col{grid-template-columns:1fr}
+  .modes-grid{grid-template-columns:1fr}
+  .features-grid{grid-template-columns:1fr}
+  .related-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr;gap:28px}
+}
+@media(max-width:767px){
+  .steps{grid-template-columns:1fr;gap:20px}
+  .related-grid{grid-template-columns:1fr}
+}
+@media(max-width:639px){
+  .hero h1{font-size:30px}
+  .hero-sub{font-size:15px}
+  .section-title{font-size:22px}
+  nav{padding:0 16px}
+  .nav-right .nav-link{display:none}
+  .hamburger{display:flex}
+  .nav-links-mobile.open{display:flex;flex-direction:column;gap:0;position:fixed;top:56px;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:8px 0;}
+  .nav-links-mobile a{padding:12px 24px;font-size:14px;color:var(--muted);text-decoration:none;display:block;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a class="wordmark" href="/"><svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:7px;flex-shrink:0"><rect width="64" height="64" rx="12" fill="#000"/><line x1="14" y1="20" x2="50" y2="20" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="32" x2="50" y2="32" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="44" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="20" x2="14" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="32" y1="20" x2="32" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="50" y1="20" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><circle cx="14" cy="20" r="3" fill="#f0b90b"/><circle cx="50" cy="20" r="3" fill="#f0b90b"/><circle cx="32" cy="32" r="3.5" fill="#f0b90b"/><circle cx="14" cy="44" r="3" fill="#f0b90b"/><circle cx="50" cy="44" r="3" fill="#f0b90b"/><circle cx="32" cy="20" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="14" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="50" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="32" cy="44" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/></svg>xBot</a>
+    <span class="badge">SIMULATOR</span>
+  </div>
+  <div class="nav-right">
+    <a class="nav-link" href="/blog.html">Blog</a>
+    <a class="nav-link" href="/faq.html">FAQ</a>
+    <a class="btn-amber" href="/app.html">Launch Simulator</a>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+<div class="nav-links-mobile" id="mobileMenu">
+  <a href="/blog.html" onclick="closeMenu()">Blog</a>
+  <a href="/faq.html" onclick="closeMenu()">FAQ</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Free crypto grid bot simulator</div>
+    <h1>Test your grid bot<br>before it <em>costs you money.</em></h1>
+    <p class="hero-sub">Configure a grid strategy, run Monte Carlo simulation or historical backtesting, and see the full distribution of outcomes — all in the browser, no sign-up required.</p>
+    <div class="hero-ctas">
+      <a class="btn-amber-lg" href="/app.html">Launch Simulator →</a>
+      <a class="btn-ghost" href="#what">How it works</a>
+    </div>
+    <div class="trust-chips">
+      <span class="chip">No sign-up required</span>
+      <span class="chip">Runs in your browser</span>
+      <span class="chip">Free forever</span>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS A GRID BOT SIMULATOR -->
+<section id="what">
+  <div class="section-inner">
+    <div class="two-col">
+      <div>
+        <div class="section-label">What is this</div>
+        <h2 class="section-title">A grid bot simulator lets you test without risk</h2>
+        <div class="prose">
+          <p>A <strong>grid bot</strong> places a ladder of buy and sell limit orders at fixed price intervals. When price oscillates within the range, each round trip captures the spread between adjacent levels. The strategy earns steadily in sideways markets — and loses steadily in trending ones.</p>
+          <p>Before deploying real capital, you need to know: how often does my configuration get liquidated? What does the fee drag look like over 30 days? How does changing leverage from 3× to 5× affect my risk profile?</p>
+          <p>A <strong>grid bot simulator</strong> answers these questions by running your configuration through hundreds of synthetic price paths (Monte Carlo) or real historical data (backtesting) — without touching an exchange.</p>
+          <p>xBot is a free, client-side simulator built specifically for <strong>perpetual futures grid bots</strong>. Everything runs in your browser. Nothing is sent to a server.</p>
+        </div>
+      </div>
+      <div>
+        <div class="example-box">
+          <div class="example-heading">Example simulation — BTC/USDT, 30 days</div>
+          <div class="example-row">
+            <span class="example-label">Entry price</span>
+            <span class="example-value">$95,000</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Grid range</span>
+            <span class="example-value">$85,000 – $105,000</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Grid levels</span>
+            <span class="example-value">20</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Leverage</span>
+            <span class="example-value">3×</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Capital (margin)</span>
+            <span class="example-value">$2,000</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Median P&L (500 paths)</span>
+            <span class="example-value green">+$418</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Liquidation probability</span>
+            <span class="example-value red">4.2%</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Win rate</span>
+            <span class="example-value amber">68.6%</span>
+          </div>
+          <div class="example-note">These numbers come from a Monte Carlo simulation using 30-day BTC historical volatility. Results vary with market conditions — run your own configuration in the simulator.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-inner">
+    <div class="section-label">Mechanics</div>
+    <h2 class="section-title">How the simulation works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Configure your grid</div>
+        <p class="step-body">Set your price range, number of grid levels, leverage, capital, fees, and grid direction (long, short, or neutral). The simulator pre-fills entry price and volatility from live market data.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Run the simulation</div>
+        <p class="step-body">Choose Monte Carlo (synthetic price paths using your volatility inputs) or backtest mode (upload real OHLCV CSV data). The engine replays your exact order book against each price path.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Read the results</div>
+        <p class="step-body">See median P&L, win rate, Sharpe ratio, max drawdown, liquidation probability, and a percentile fan chart across all simulated paths. Adjust and re-run until you find a configuration worth deploying.</p>
+      </div>
+    </div>
+    <div class="risk-box">
+      <strong>Important:</strong> simulation results depend on your volatility and drift assumptions. A grid bot that performs well in sideways conditions will perform poorly in a strong trend. The simulator shows what can happen under your assumptions — not what will happen. Always stress-test against scenarios where price breaks your range.
+    </div>
+  </div>
+</section>
+
+<!-- THREE MODES -->
+<section id="modes">
+  <div class="section-inner">
+    <div class="section-label">Configuration</div>
+    <h2 class="section-title">Three grid directions — very different risk profiles</h2>
+    <p class="section-body">The most important choice in grid bot configuration isn't the number of levels or the range — it's direction. Long, short, and neutral grids behave completely differently when price trends.</p>
+    <div class="modes-grid">
+      <div class="mode-card">
+        <div class="mode-label neutral">Neutral</div>
+        <div class="mode-title">Neutral grid</div>
+        <p class="mode-body">Runs buy orders below entry and sell orders above entry simultaneously. Starts flat and builds exposure in the direction price moves. Earns in both directions as long as price oscillates — but exposure grows on both sides as fills accumulate.</p>
+        <div class="mode-when"><strong>Best when:</strong> you expect sideways movement and have no directional view. Most complex to manage due to two simultaneous exposure books.</div>
+      </div>
+      <div class="mode-card">
+        <div class="mode-label long">Long</div>
+        <div class="mode-title">Long grid</div>
+        <p class="mode-body">Places buy orders across the entire range. Each fill opens a long position; the corresponding sell closes it at a profit. Starts with full long exposure. Benefits from upward drift — funding hurts if market is bearish.</p>
+        <div class="mode-when"><strong>Best when:</strong> you expect the market to move sideways to slightly up. Simple to understand: you're earning grid income on a long position.</div>
+      </div>
+      <div class="mode-card">
+        <div class="mode-label short">Short grid</div>
+        <div class="mode-title">Short grid</div>
+        <p class="mode-body">Places sell orders across the range and earns as price falls and recovers. Starts fully short. Benefits from downward drift and typically receives funding rather than paying it in bearish markets.</p>
+        <div class="mode-when"><strong>Best when:</strong> you expect the market to move sideways to slightly down. Mirror image of the long grid in terms of mechanics and risk.</div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--dim);margin-top:20px">→ Read more: <a href="/blog-long-short-neutral-grid.html" style="color:var(--muted);text-decoration:none;transition:color .15s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">Long vs Short vs Neutral grid: when to use each direction</a></p>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-label">Capabilities</div>
+    <h2 class="section-title">What xBot simulates</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M3 17l4-8 4 5 3-3 4 6" stroke="#f0b90b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="feature-title">Monte Carlo simulation</div>
+          <p class="feature-body">Run 100–1,000 synthetic price paths using your volatility (IV) and drift inputs. See the full outcome distribution including tail risks — not just an average.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M4 4v16h16" stroke="#4b8ded" stroke-width="1.8" stroke-linecap="round"/><path d="M7 14l3-4 3 3 4-5" stroke="#4b8ded" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="feature-title">Historical backtesting</div>
+          <p class="feature-body">Upload real OHLCV data from any exchange in CSV format. The engine replays your exact grid configuration against historical price tick by tick.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="#00c853" stroke-width="1.8"/><path d="M12 8v4l3 2" stroke="#00c853" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div class="feature-title">Live market data</div>
+          <p class="feature-body">Entry price, funding rate, and 30-day volatility auto-populate from live exchange feeds. The Market Analysis panel flags trending vs ranging conditions using ADX.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="16" rx="2" stroke="#999" stroke-width="1.6"/><rect x="13" y="4" width="8" height="16" rx="2" stroke="#f0b90b" stroke-width="1.6"/></svg>
+        </div>
+        <div>
+          <div class="feature-title">A/B strategy comparison</div>
+          <p class="feature-body">Run two configurations against the same price paths side by side. Change one variable — leverage, grid count, direction — and see the exact impact on every metric.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4" stroke="#f0b90b" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div class="feature-title">Fee and funding modelling</div>
+          <p class="feature-body">Taker and maker fees applied to every fill. Funding rate drag modelled across the simulation period. See exactly how much the invisible costs eat into grid income.</p>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#ff1744" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="feature-title">Liquidation tracking</div>
+          <p class="feature-body">Liquidation price recalculated dynamically as position size changes with each fill. Liquidation probability reported across all simulated paths. Stop-loss and take-profit support included.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="section-inner narrow" style="text-align:center">
+    <div class="section-label">Get started</div>
+    <h2 class="cta-title">Run your first simulation in under two minutes</h2>
+    <p class="cta-sub">No account. No installation. Configure your grid, click Run, and see what happens before you touch the exchange.</p>
+    <a class="btn-amber-lg" href="/app.html">Launch the Simulator →</a>
+    <div class="trust-chips" style="margin-top:20px">
+      <span class="chip">Free forever</span>
+      <span class="chip">No data leaves your browser</span>
+      <span class="chip">Works on mobile</span>
+    </div>
+  </div>
+</section>
+
+<!-- RELATED ARTICLES -->
+<section id="related">
+  <div class="section-inner">
+    <div class="section-label">Learn more</div>
+    <h2 class="section-title">Understand your results</h2>
+    <div class="related-grid">
+      <a class="related-card" href="/blog-what-is-a-grid-bot.html">
+        <div class="related-tag">Fundamentals</div>
+        <div class="related-title">How a neutral grid bot earns in sideways markets</div>
+        <p class="related-desc">The mechanics of grid order placement, fill cycles, and what breaks the strategy.</p>
+      </a>
+      <a class="related-card" href="/blog-monte-carlo-results.html">
+        <div class="related-tag">Walkthrough</div>
+        <div class="related-title">Reading your Monte Carlo results: what the percentile bands mean</div>
+        <p class="related-desc">Fan charts, Sharpe, Calmar, win rate — what each output actually tells you.</p>
+      </a>
+      <a class="related-card" href="/blog-liquidation.html">
+        <div class="related-tag">Risk</div>
+        <div class="related-title">How grid bot liquidation actually works</div>
+        <p class="related-desc">Why liquidation price shifts as orders fill — and how to calculate it correctly.</p>
+      </a>
+      <a class="related-card" href="/blog-funding-rate-drag.html">
+        <div class="related-tag">Risk</div>
+        <div class="related-title">The hidden cost of grid bots: funding rate drag explained</div>
+        <p class="related-desc">Funding accrues every 8 hours on open positions. Here's how much it costs.</p>
+      </a>
+      <a class="related-card" href="/blog-how-many-grids.html">
+        <div class="related-tag">Strategy</div>
+        <div class="related-title">How many grids should you run?</div>
+        <p class="related-desc">More grids means more fills — until fees eat the profit. How to find the right count.</p>
+      </a>
+      <a class="related-card" href="/blog-backtest-pitfalls.html">
+        <div class="related-tag">Backtest</div>
+        <div class="related-title">Why your backtest looks better than live results will</div>
+        <p class="related-desc">Four ways grid bot backtests systematically flatter the strategy.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="wordmark" href="/"><svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:7px;flex-shrink:0"><rect width="64" height="64" rx="12" fill="#000"/><line x1="14" y1="20" x2="50" y2="20" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="32" x2="50" y2="32" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="44" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="20" x2="14" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="32" y1="20" x2="32" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="50" y1="20" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><circle cx="14" cy="20" r="3" fill="#f0b90b"/><circle cx="50" cy="20" r="3" fill="#f0b90b"/><circle cx="32" cy="32" r="3.5" fill="#f0b90b"/><circle cx="14" cy="44" r="3" fill="#f0b90b"/><circle cx="50" cy="44" r="3" fill="#f0b90b"/><circle cx="32" cy="20" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="14" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="50" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="32" cy="44" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/></svg>xBot</a>
+      <span class="badge" style="margin-left:8px">SIMULATOR</span>
+      <p class="footer-desc">A free, client-side grid bot simulator for perpetual futures traders. No sign-up, no backend.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Links</div>
+      <ul class="footer-links">
+        <li><a href="/app.html">Simulator</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Articles</div>
+      <ul class="footer-links">
+        <li><a href="/blog-what-is-a-grid-bot.html">What is a grid bot?</a></li>
+        <li><a href="/blog-long-short-neutral-grid.html">Long vs Short vs Neutral</a></li>
+        <li><a href="/blog-liquidation.html">Liquidation explained</a></li>
+        <li><a href="/blog-funding-rate-drag.html">Funding rate drag</a></li>
+        <li><a href="/blog-backtest-pitfalls.html">Backtesting pitfalls</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Privacy</div>
+      <p class="footer-note">Built with no backend. All simulation runs in your browser. Your data never leaves your device.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 xBot. All rights reserved.</div>
+</footer>
+
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')}
+</script>
+</body>
+</html>

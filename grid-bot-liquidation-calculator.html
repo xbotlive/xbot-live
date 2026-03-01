@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Grid Bot Liquidation Calculator — Know Your Risk Before You Deploy | xBot</title>
+<meta name="description" content="Calculate grid bot liquidation price for perpetual futures. Understand how liquidation shifts as orders fill, and simulate the probability of liquidation across hundreds of price paths."/>
+<link rel="canonical" href="https://www.xbot.live/grid-bot-liquidation-calculator.html"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://www.xbot.live/grid-bot-liquidation-calculator.html"/>
+<meta property="og:title" content="Grid Bot Liquidation Calculator — Know Your Risk Before You Deploy | xBot"/>
+<meta property="og:description" content="Calculate grid bot liquidation price for perpetual futures. Understand how liquidation shifts as orders fill, and simulate the probability of liquidation across hundreds of price paths."/>
+<meta property="og:site_name" content="xBot"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:site" content="@xbot_live"/>
+<meta name="twitter:title" content="Grid Bot Liquidation Calculator — Know Your Risk Before You Deploy | xBot"/>
+<meta name="twitter:description" content="Calculate grid bot liquidation price for perpetual futures. Understand how liquidation shifts as orders fill, and simulate the probability of liquidation across hundreds of price paths."/>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "xBot Grid Bot Liquidation Calculator",
+  "url": "https://www.xbot.live/app.html",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+  "description": "Calculate and simulate grid bot liquidation risk for perpetual futures. Dynamic liquidation tracking, probability simulation, free and browser-based.",
+  "publisher": {"@type": "Organization", "name": "xBot", "url": "https://www.xbot.live"}
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000000;--panel:#111111;--card:#1a1a1a;--border:#333333;
+  --border2:#222222;--text:#ffffff;--muted:#999999;--dim:#666666;
+  --green:#00c853;--red:#ff1744;--amber:#f0b90b;--blue:#4b8ded;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--text);line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--panel);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.nav-left{display:flex;align-items:center;gap:10px}
+.wordmark{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.01em;text-decoration:none}
+.badge{font-size:10px;color:var(--blue);background:rgba(75,141,237,0.09);padding:3px 9px;border-radius:4px;font-weight:600;letter-spacing:.05em}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-link{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;transition:color .15s}
+.nav-link:hover{color:var(--text)}
+.btn-amber{background:var(--amber);color:#000;border:none;border-radius:5px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:opacity .15s}
+.btn-amber:hover{opacity:.85}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--muted)}
+.nav-links-mobile{display:none}
+.hero{min-height:88vh;display:flex;align-items:center;justify-content:center;padding:80px 24px 60px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,23,68,0.02) 1px, transparent 1px),linear-gradient(90deg, rgba(255,23,68,0.02) 1px, transparent 1px);background-size:48px 48px;}
+.hero-content{position:relative;text-align:center;max-width:700px;width:100%}
+.hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--red);text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-size:48px;font-weight:700;line-height:1.15;letter-spacing:-0.02em;margin-bottom:20px;}
+.hero h1 em{font-style:normal;color:var(--amber)}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.65;margin-bottom:36px;max-width:580px;margin-left:auto;margin-right:auto;}
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
+.btn-amber-lg{background:var(--amber);color:#000;border:none;border-radius:5px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;font-family:inherit;transition:opacity .15s;display:inline-block;}
+.btn-amber-lg:hover{opacity:.85}
+.btn-ghost{background:none;border:1px solid var(--border);color:var(--text);border-radius:5px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit;transition:border-color .15s;}
+.btn-ghost:hover{border-color:var(--muted)}
+.trust-chips{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.chip{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:5px}
+.chip::before{content:"⬡";color:var(--amber);font-size:10px}
+section{padding:80px 24px}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-inner.narrow{max-width:760px}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--amber);text-transform:uppercase;margin-bottom:12px}
+.section-title{font-size:28px;font-weight:700;letter-spacing:-0.01em;margin-bottom:16px}
+.section-body{font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:40px;max-width:680px}
+#what{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.prose{font-size:14px;color:var(--muted);line-height:1.8}
+.prose p{margin-bottom:16px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text)}
+.example-box{background:var(--card);border:1px solid rgba(255,23,68,0.25);border-radius:8px;padding:24px}
+.example-heading{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--red);margin-bottom:16px}
+.example-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border2);font-size:13px}
+.example-row:last-child{border-bottom:none}
+.example-label{color:var(--dim)}
+.example-value{color:var(--text);font-weight:500;font-variant-numeric:tabular-nums}
+.example-value.green{color:var(--green)}
+.example-value.amber{color:var(--amber)}
+.example-value.red{color:var(--red)}
+.example-note{font-size:12px;color:var(--dim);margin-top:14px;line-height:1.6;padding-top:14px;border-top:1px solid var(--border2)}
+.warn-box{background:rgba(255,23,68,0.06);border:1px solid rgba(255,23,68,0.2);border-radius:6px;padding:16px 20px;font-size:13px;color:var(--muted);line-height:1.65;}
+.warn-box strong{color:var(--red)}
+.steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;margin-bottom:32px}
+.step{display:flex;flex-direction:column;gap:10px}
+.step-num{width:32px;height:32px;border-radius:50%;background:rgba(255,23,68,0.1);border:1px solid rgba(255,23,68,0.3);color:var(--red);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-title{font-size:14px;font-weight:600;color:var(--text)}
+.step-body{font-size:13px;color:var(--muted);line-height:1.65}
+#factors{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.factors-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.factor-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px}
+.factor-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px}
+.factor-body{font-size:13px;color:var(--muted);line-height:1.65}
+.factor-impact{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-top:10px;padding-top:10px;border-top:1px solid var(--border2)}
+.factor-impact.high{color:var(--red)}
+.factor-impact.med{color:var(--amber)}
+#cta{background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center}
+.related-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.related-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;text-decoration:none;transition:border-color .15s}
+.related-card:hover{border-color:var(--amber)}
+.related-tag{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.related-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.35;margin-bottom:6px}
+.related-desc{font-size:12px;color:var(--muted);line-height:1.55}
+footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 24px 24px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1100px;margin:0 auto;padding-bottom:32px;border-bottom:1px solid var(--border2)}
+.footer-brand .wordmark{font-size:16px}
+.footer-desc{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.65}
+.footer-heading{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.footer-links a:hover{color:var(--text)}
+.footer-note{font-size:12px;color:var(--dim);line-height:1.65}
+.footer-bottom{max-width:1100px;margin:24px auto 0;font-size:11px;color:var(--dim)}
+@media(max-width:1023px){
+  .two-col,.factors-grid{grid-template-columns:1fr}
+  .related-grid{grid-template-columns:1fr 1fr}
+  .footer-grid{grid-template-columns:1fr;gap:28px}
+}
+@media(max-width:767px){
+  .steps{grid-template-columns:1fr;gap:20px}
+  .related-grid{grid-template-columns:1fr}
+}
+@media(max-width:639px){
+  .hero h1{font-size:30px}
+  nav{padding:0 16px}
+  .nav-right .nav-link{display:none}
+  .hamburger{display:flex}
+  .nav-links-mobile.open{display:flex;flex-direction:column;position:fixed;top:56px;left:0;right:0;background:var(--panel);border-bottom:1px solid var(--border);padding:8px 0;}
+  .nav-links-mobile a{padding:12px 24px;font-size:14px;color:var(--muted);text-decoration:none;display:block;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a class="wordmark" href="/"><svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:7px;flex-shrink:0"><rect width="64" height="64" rx="12" fill="#000"/><line x1="14" y1="20" x2="50" y2="20" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="32" x2="50" y2="32" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="44" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="20" x2="14" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="32" y1="20" x2="32" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="50" y1="20" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><circle cx="14" cy="20" r="3" fill="#f0b90b"/><circle cx="50" cy="20" r="3" fill="#f0b90b"/><circle cx="32" cy="32" r="3.5" fill="#f0b90b"/><circle cx="14" cy="44" r="3" fill="#f0b90b"/><circle cx="50" cy="44" r="3" fill="#f0b90b"/><circle cx="32" cy="20" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="14" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="50" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="32" cy="44" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/></svg>xBot</a>
+    <span class="badge">SIMULATOR</span>
+  </div>
+  <div class="nav-right">
+    <a class="nav-link" href="/blog.html">Blog</a>
+    <a class="nav-link" href="/faq.html">FAQ</a>
+    <a class="btn-amber" href="/app.html">Launch Simulator</a>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+<div class="nav-links-mobile" id="mobileMenu">
+  <a href="/blog.html" onclick="closeMenu()">Blog</a>
+  <a href="/faq.html" onclick="closeMenu()">FAQ</a>
+</div>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Grid bot liquidation risk</div>
+    <h1>Know your liquidation price<br>before it <em>finds you.</em></h1>
+    <p class="hero-sub">Liquidation on a perpetual futures grid bot is not fixed — it shifts every time an order fills. xBot tracks it dynamically and shows you the probability of liquidation across hundreds of simulated price paths.</p>
+    <div class="hero-ctas">
+      <a class="btn-amber-lg" href="/app.html">Simulate Liquidation Risk →</a>
+      <a class="btn-ghost" href="#what">Understand the mechanics</a>
+    </div>
+    <div class="trust-chips">
+      <span class="chip">Dynamic liquidation tracking</span>
+      <span class="chip">Probability across 500 paths</span>
+      <span class="chip">Free, no sign-up</span>
+    </div>
+  </div>
+</section>
+
+<section id="what">
+  <div class="section-inner">
+    <div class="two-col">
+      <div>
+        <div class="section-label">Why liquidation is different for grid bots</div>
+        <h2 class="section-title">Grid bot liquidation moves as you trade</h2>
+        <div class="prose">
+          <p>On a simple leveraged long position, liquidation price is fixed at entry. On a grid bot, it is not. <strong>Every order that fills changes your position size</strong> — and therefore changes your liquidation price.</p>
+          <p>For a long grid bot: as price falls, buy orders fill and your long position grows. This reduces your liquidation buffer. The danger zone is not static — it approaches you as price approaches the bottom of your range.</p>
+          <p>A simple formula won't give you the right answer because it can't model the fill sequence. You need to simulate the order book dynamically to see where liquidation actually lands at each point in the trade.</p>
+          <p>xBot recalculates liquidation price after every fill across all simulated price paths. The output tells you the <strong>probability that your configuration gets liquidated</strong> under your volatility assumptions — not just a single number that assumes nothing changes.</p>
+        </div>
+      </div>
+      <div>
+        <div class="example-box">
+          <div class="example-heading">Liquidation example — Long grid, BTC/USDT</div>
+          <div class="example-row">
+            <span class="example-label">Entry price</span>
+            <span class="example-value">$95,000</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Grid range</span>
+            <span class="example-value">$85,000 – $105,000</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Grid levels</span>
+            <span class="example-value">20</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Leverage</span>
+            <span class="example-value">5×</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Capital</span>
+            <span class="example-value">$2,000</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Liq. price at entry</span>
+            <span class="example-value amber">~$76,000</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Liq. price at range bottom</span>
+            <span class="example-value red">~$82,500</span>
+          </div>
+          <div class="example-row">
+            <span class="example-label">Liq. probability (500 paths)</span>
+            <span class="example-value red">11.4%</span>
+          </div>
+          <div class="example-note">As price falls toward $85,000 and buys fill, the long position grows — pushing the liquidation price up toward the range floor. At 5× leverage, the buffer is tighter than it looks at entry.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="section-inner">
+    <div class="section-label">How to use the liquidation simulator</div>
+    <h2 class="section-title">Simulate your liquidation risk in three steps</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Configure your grid</div>
+        <p class="step-body">Enter your price range, grid levels, leverage, capital, fee rate, and direction. The simulator pulls live entry price from market data — or you can set it manually.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Run Monte Carlo</div>
+        <p class="step-body">Run 500 simulated price paths using your volatility and drift inputs. The engine tracks position size, average entry, and liquidation price dynamically after every fill across every path.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Read the liquidation output</div>
+        <p class="step-body">The results show liquidation probability across all paths, how often liquidation was triggered, at what price it occurred, and what the P&L was at that point. Adjust leverage or range and re-run.</p>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--dim)">→ Deep dive: <a href="/blog-liquidation.html" style="color:var(--muted);text-decoration:none" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">How grid bot liquidation actually works — and how to calculate your price</a></p>
+  </div>
+</section>
+
+<section id="factors">
+  <div class="section-inner">
+    <div class="section-label">What drives liquidation risk</div>
+    <h2 class="section-title">Four factors that determine how close you are</h2>
+    <div class="factors-grid">
+      <div class="factor-card">
+        <div class="factor-title">Leverage</div>
+        <p class="factor-body">The single biggest lever. At 2× you can absorb a 50% move before liquidation. At 10× it's 10%. For a grid bot with a 20% range, 5× leverage leaves meaningful cushion — 10× does not. Lower leverage is almost always the right call for grid strategies.</p>
+        <div class="factor-impact high">⬆ Impact: Very high</div>
+      </div>
+      <div class="factor-card">
+        <div class="factor-title">Range width relative to volatility</div>
+        <p class="factor-body">A range that's too narrow relative to historical volatility will be breached frequently. When price exits the range in a trending market, your grid stops earning but your position keeps building. Set your range to at least 1.5–2× the expected 30-day price move.</p>
+        <div class="factor-impact high">⬆ Impact: High</div>
+      </div>
+      <div class="factor-card">
+        <div class="factor-title">Grid direction</div>
+        <p class="factor-body">A long grid accumulates long exposure as price falls — exactly when the market is moving against you. A neutral grid accumulates exposure on both sides simultaneously. Direction determines which market moves hurt you most and how quickly your liquidation buffer erodes.</p>
+        <div class="factor-impact high">⬆ Impact: High</div>
+      </div>
+      <div class="factor-card">
+        <div class="factor-title">Number of grid levels</div>
+        <p class="factor-body">More levels means smaller position increments per fill, which slows the rate at which your liquidation price moves. But more levels also means more capital deployed per fill and lower per-trade profit. There's a balance — the simulator lets you test different grid counts side by side.</p>
+        <div class="factor-impact med">⬆ Impact: Medium</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cta">
+  <div class="section-inner narrow" style="text-align:center">
+    <div class="section-label">Simulate before you deploy</div>
+    <h2 class="section-title">Know your liquidation probability before you trade</h2>
+    <p style="font-size:15px;color:var(--muted);margin-bottom:28px">Configure your grid, run 500 price paths, and see the exact probability your setup gets liquidated — before touching the exchange.</p>
+    <a class="btn-amber-lg" href="/app.html">Simulate Liquidation Risk →</a>
+    <div class="trust-chips" style="margin-top:20px">
+      <span class="chip">Free forever</span>
+      <span class="chip">Dynamic liquidation tracking</span>
+      <span class="chip">No sign-up required</span>
+    </div>
+  </div>
+</section>
+
+<section id="related">
+  <div class="section-inner">
+    <div class="section-label">Learn more</div>
+    <h2 class="section-title">Understand the full risk picture</h2>
+    <div class="related-grid">
+      <a class="related-card" href="/blog-liquidation.html">
+        <div class="related-tag">Risk</div>
+        <div class="related-title">How grid bot liquidation actually works — and how to calculate your price</div>
+        <p class="related-desc">Why liquidation shifts as orders fill and why the danger zone is closer than most traders expect.</p>
+      </a>
+      <a class="related-card" href="/blog-leverage.html">
+        <div class="related-tag">Strategy</div>
+        <div class="related-title">What leverage to use on a perpetual futures grid bot</div>
+        <p class="related-desc">How to calculate the right leverage for your range, capital, and risk tolerance.</p>
+      </a>
+      <a class="related-card" href="/blog-funding-rate-drag.html">
+        <div class="related-tag">Risk</div>
+        <div class="related-title">The hidden cost of grid bots: funding rate drag</div>
+        <p class="related-desc">Funding accrues on open positions every 8 hours and erodes your margin buffer silently.</p>
+      </a>
+      <a class="related-card" href="/blog-grid-range-volatility.html">
+        <div class="related-tag">Strategy</div>
+        <div class="related-title">How to size your grid range using historical volatility</div>
+        <p class="related-desc">A range that's too narrow invites liquidation. Use realised volatility to set one that holds.</p>
+      </a>
+      <a class="related-card" href="/blog-long-short-neutral-grid.html">
+        <div class="related-tag">Strategy</div>
+        <div class="related-title">Long vs Short vs Neutral grid: when to use each direction</div>
+        <p class="related-desc">Direction determines which market moves build dangerous exposure fastest.</p>
+      </a>
+      <a class="related-card" href="/grid-bot-simulator.html">
+        <div class="related-tag">Tool</div>
+        <div class="related-title">About the grid bot simulator</div>
+        <p class="related-desc">Full overview of Monte Carlo simulation, backtesting, and A/B comparison modes.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="wordmark" href="/"><svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:7px;flex-shrink:0"><rect width="64" height="64" rx="12" fill="#000"/><line x1="14" y1="20" x2="50" y2="20" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="32" x2="50" y2="32" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="44" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="14" y1="20" x2="14" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="32" y1="20" x2="32" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><line x1="50" y1="20" x2="50" y2="44" stroke="#f0b90b" stroke-width="1.5" stroke-opacity="0.35"/><circle cx="14" cy="20" r="3" fill="#f0b90b"/><circle cx="50" cy="20" r="3" fill="#f0b90b"/><circle cx="32" cy="32" r="3.5" fill="#f0b90b"/><circle cx="14" cy="44" r="3" fill="#f0b90b"/><circle cx="50" cy="44" r="3" fill="#f0b90b"/><circle cx="32" cy="20" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="14" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="50" cy="32" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/><circle cx="32" cy="44" r="2.5" fill="#000" stroke="#f0b90b" stroke-width="1.2"/></svg>xBot</a>
+      <span class="badge" style="margin-left:8px">SIMULATOR</span>
+      <p class="footer-desc">A free, client-side grid bot simulator for perpetual futures traders. No sign-up, no backend.</p>
+    </div>
+    <div>
+      <div class="footer-heading">Links</div>
+      <ul class="footer-links">
+        <li><a href="/app.html">Simulator</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+        <li><a href="/blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Articles</div>
+      <ul class="footer-links">
+        <li><a href="/blog-what-is-a-grid-bot.html">What is a grid bot?</a></li>
+        <li><a href="/blog-long-short-neutral-grid.html">Long vs Short vs Neutral</a></li>
+        <li><a href="/blog-liquidation.html">Liquidation explained</a></li>
+        <li><a href="/blog-funding-rate-drag.html">Funding rate drag</a></li>
+        <li><a href="/blog-backtest-pitfalls.html">Backtesting pitfalls</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Privacy</div>
+      <p class="footer-note">Built with no backend. All simulation runs in your browser. Your data never leaves your device.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 xBot. All rights reserved.</div>
+</footer>
+
+<script>
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('open')}
+function closeMenu(){document.getElementById('mobileMenu').classList.remove('open')}
+</script>
+</body>
+</html>
