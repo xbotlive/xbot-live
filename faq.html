@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>FAQ — xBot Grid Bot Simulator</title>
+<title>Grid Bot Simulator FAQ — Liquidation, Funding, Backtest & Config | xBot</title>
 <meta name="description" content="Answers to common questions about grid bot simulation, configuration, liquidation, funding, and interpreting Monte Carlo and backtest results."/>
+<link rel="canonical" href="https://xbot.live/faq.html"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png"/>
@@ -153,6 +154,206 @@ footer{
   .page-wrap{padding:72px 16px 60px}
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a grid bot?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A grid bot places a ladder of buy and sell orders across a defined price range. When price falls, buy orders fill. When price rises back up, the matching sell orders fill. Each completed cycle \u2014 one buy followed by one sell at the next level \u2014 captures the gap between those levels as profit. The bot keeps repeating this process while price moves back and forth inside the range."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What markets work best for grid bots?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Grid bots work best in markets that move sideways rather than trend hard in one direction. The ideal setup is a liquid market with steady two-way movement \u2014 enough volatility to trigger fills, but not so much that price breaks out and keeps running. BTC, ETH and SOL perpetual futures are common choices because they usually have tighter spreads and better depth. As a rule: lower ADX suits grid trading better than high ADX, high liquidity is better than thin books, and stable range behaviour is be"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much capital do I need?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The absolute minimum is set by the exchange's minimum order size \u2014 often around $5 notional per grid level . With 20 grids at 5\u00d7 leverage, that implies about $100 notional total, or roughly $20 of margin . In practice, that is too small because fees become a large share of expected profit. A more realistic starting point is $500\u2013$1,000 of margin for a 20-grid setup. The important number is notional per grid. Try to keep it at $20 or more per grid so fee drag stays manageable."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need to understand the maths to use this tool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The simulator does the calculations for you. That said, you will get better decisions if you understand the basics: liquidation distance, funding drag, and profit per completed round trip. You do not need a quant background, but you do need to know what the outputs are telling you. The FAQ and blog break those ideas down in plain English."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Monte Carlo and backtest mode?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "They answer different questions. Monte Carlo asks: what could happen? It generates many synthetic price paths from your implied volatility and drift assumptions, then shows the spread of possible outcomes. Backtest asks: what would have happened? It runs the strategy against real historical OHLCV data from a specific market and period. Use Monte Carlo for scenario planning and stress testing. Use backtest for checking the strategy against real market history. You usually want both."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where do I get historical OHLCV data for backtesting?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Common sources include Binance (data.binance.vision), TradingView (export from the chart), Bybit, and CoinGecko. The file should be a standard CSV with timestamp, open, high, low, close, and volume columns. Aim for at least 90 days of data if you want the result to mean anything. 1-hour or 4-hour candles are a sensible starting point for most grid tests. More data usually gives a more honest picture."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does my liquidation price change when I adjust the grid range?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Because the grid range changes your average entry. For a long grid, orders fill lower as price drops. If you widen the range downward, you change which orders can fill and at what levels \u2014 that changes the average entry price, which changes the liquidation price. In plain terms: change the structure of the fill ladder, and you change the liquidation point. Leverage still has the biggest direct effect, but grid range matters because it shifts the position build."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does \\\"shared seed\\\" mean in A/B compare mode?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It means both configurations are tested on the exact same random price paths. That matters because it removes luck from the comparison. If one setup performs better, the difference is more likely to come from the strategy settings rather than from a different random sequence. Without a shared seed, you could be comparing two different strategies on two different effective markets \u2014 which is not a clean test."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do I need an even number of grids?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Because an odd number creates an awkward centre point. With an even number, the simulator places exactly half the orders below entry and half above \u2014 a clean, symmetrical structure with no ambiguity around the level nearest the entry price. With an odd number, the centre level becomes messy and the bot has to decide whether it belongs to the bid side or ask side. The simulator blocks odd numbers to avoid this."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I save my configuration and come back to it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Use Saved Configs to store setups in your browser. Once saved, they persist locally on that device. You can also share a setup by copying a link, which loads the same parameters for anyone who opens it. This makes it easy to keep a library of test cases and compare ideas properly instead of rebuilding each setup from scratch."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does the \\\"Copy link\\\" button do?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It creates a shareable URL containing your current configuration. When someone opens that link, the simulator loads with those settings already filled in. It only includes configuration inputs \u2014 not temporary data such as live prices or uploaded CSV files. It is a fast way to share a test setup, compare ideas, or bookmark a specific configuration."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is profit per round trip?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The profit from one full grid cycle: a buy fills, then the matching sell fills one level higher. For a standard arithmetic grid, that profit is roughly: grid spacing \u2212 round-trip maker fees . The simulator shows this as both a dollar amount and a percentage of order size. This is one of the most important outputs on the page \u2014 if profit per round trip is too thin, the setup will struggle even before funding and directional risk are considered."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between arithmetic and geometric grid spacing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Arithmetic spacing uses equal price gaps \u2014 e.g. every $500. Geometric spacing uses equal percentage gaps \u2014 e.g. every 0.5%. Arithmetic is simple and works fine for tighter ranges. Geometric is usually better for wider ranges, especially at high prices, because percentage moves scale more naturally than fixed dollar gaps. That is why many exchange grid bots default to geometric spacing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a neutral grid?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A neutral grid runs both sides at once \u2014 a long book below entry and a short book above entry. As price falls, the lower buy side fills and opens long exposure. As price rises, the upper sell side fills and opens short exposure. At the entry level, the net position starts flat. The attraction is harvesting two-way movement without a directional view. The cost is complexity: a neutral grid has two books to manage, two sets of exposure building over time, separate liquidation considerations, and f"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does the bot handle price moving in one direction without oscillating?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Poorly \u2014 and that is the main risk of grid trading. A grid bot needs back-and-forth movement. If price runs one way and does not come back, the bot keeps building exposure against the move. For a long grid in a falling market, that means it keeps accumulating a larger losing long position. Orders may keep filling, but the bot cannot realise the intended grid profits until price rebounds. Take-profit and stop-loss settings help by cutting the trade before the position becomes too large or the dra"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is funding rate and why does it matter?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Perpetual futures use funding to keep the perpetual price close to spot. At regular intervals \u2014 often every 8 hours, sometimes every hour \u2014 one side pays the other based on open notional exposure. Even a small rate becomes meaningful over time. Example: at 0.01% per 8 hours on a $10,000 notional position, that is $1 per period \u2014 $1,095 per year if sustained . For leveraged grid bots with large notional exposure, funding can turn a seemingly profitable setup into a bad one. Always treat funding a"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is the liquidation price calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Liquidation price depends on average entry price, leverage, maintenance margin rate, fees, and funding effects. The intuition is simple: higher leverage brings liquidation closer, a worse average entry brings it closer, and higher maintenance margin and extra costs bring it closer. The exact formula varies by exchange and shifts as the bot realises profit or builds more size. So the displayed figure is best treated as a working estimate. What matters most: liquidation is dynamic because the posi"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I lose money even if price stays within the grid range?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. There are two common ways this happens. Funding drag: if funding is persistently costly and the run is long enough, cumulative funding payments can exceed the grid income. Position imbalance: a neutral grid can still carry sizeable unrealised losses on one side if price drifts toward one edge and sits there. Staying inside the range does not automatically mean the setup is safe or profitable. Grid income is only one part of the result."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does break-even oscillations mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This tells you how many completed grid cycles the bot needs just to recover its initial opening cost. For long and short bots, the opening position is typically entered with a taker order, creating an upfront fee cost. The idea is: break-even oscillations = opening cost \u00f7 profit per round trip . Example: if break-even is 12 oscillations and the median simulation shows 40 oscillations, the setup has decent room to absorb the initial cost. For neutral grids, there is no initial market-entry cost i"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does win rate mean for a grid bot?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Win rate is the share of simulation runs that finish with positive total P&L \u2014 including grid income, unrealised P&L on any open position, and funding paid or received. If win rate is 65%, that means 65 out of 100 simulated runs ended in profit. It does not mean 65% of individual orders were profitable. In a grid, each completed round trip is profitable before broader position and funding effects are taken into account."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is Sharpe ratio in this context?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sharpe ratio measures return relative to volatility. In plain terms: how much return did the strategy produce for the amount of P&L fluctuation it took to get there? A practical reading: above 1.0 is generally solid risk-adjusted performance, around 0 means little reward for the risk taken, below 0 means the strategy lost money on average. Use Sharpe to compare setups, not to predict future outcomes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does Calmar ratio tell me?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Calmar ratio compares return to drawdown: how much return did the strategy generate relative to its worst peak-to-trough loss? Higher is better. For many traders, Calmar is easier to understand than Sharpe because drawdown is the risk they actually feel. That is especially true for grid strategies, where outcomes can be skewed and the pain usually shows up as a large open loss before anything else."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is P95 P&L so much higher than median?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Because P95 is an upside case, not the typical case. P95 means a result that only the best 5% of simulation runs exceeded \u2014 usually reflecting a very favourable path with frequent oscillation inside the grid and limited stress near the boundaries. The median is the more useful planning number. A large gap between median and P95 usually means outcomes are widely spread, so the strategy is more path-dependent than it first appears."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What do the fan chart bands represent?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The fan chart shows how outcomes spread over time across all simulations. The median line is the middle outcome path. The 25th\u201375th percentile band contains the middle 50% of outcomes. The 10th\u201390th percentile band contains 80% of outcomes. A narrow fan means outcomes are relatively stable. A wide fan means outcomes vary more and the setup is less predictable. Best and worst price paths mark the extremes \u2014 useful for context, but not what you should plan around."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 

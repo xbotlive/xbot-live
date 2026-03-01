@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Blog — xBot Grid Bot Simulator</title>
+<title>Crypto Grid Bot Strategy Articles & Guides | xBot</title>
 <meta name="description" content="Articles on grid bot strategy, risk management, and perpetual futures trading — written for traders who want to understand what they're running."/>
+<link rel="canonical" href="https://xbot.live/blog.html"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png"/>
@@ -119,7 +120,102 @@ footer{background:var(--panel);border-top:1px solid var(--border);padding:48px 2
   </div>
 
   <div class="articles-grid" id="articlesGrid">
-    <div style="padding:32px 0;font-size:13px;color:var(--dim)">Loading articles…</div>
+    <a class="article-card" href="/blog-what-is-a-grid-bot.html">
+      <div>
+        <div class="article-card-tag">Fundamentals</div>
+        <div class="article-card-title">How a neutral grid bot earns in sideways markets</div>
+        <div class="article-card-desc">A neutral grid bot earns by capturing the spread between limit orders as price oscillates. Learn the mechanics, a worked example, and what can go wrong.</div>
+      </div>
+      <div class="article-card-meta">5 min read<br><span style="color:var(--dim)">2025-07-01</span></div>
+    </a>
+    <a class="article-card" href="/blog-long-short-neutral-grid.html">
+      <div>
+        <div class="article-card-tag">Strategy</div>
+        <div class="article-card-title">Long vs Short vs Neutral grid: when to use each direction</div>
+        <div class="article-card-desc">Grid direction determines your exposure when price trends, how funding affects you, and which regimes suit the strategy. Here's how to choose.</div>
+      </div>
+      <div class="article-card-meta">5 min read<br><span style="color:var(--dim)">2025-07-03</span></div>
+    </a>
+    <a class="article-card" href="/blog-grid-range-volatility.html">
+      <div>
+        <div class="article-card-tag">Strategy</div>
+        <div class="article-card-title">How to size your grid range using historical volatility</div>
+        <div class="article-card-desc">Too narrow and price breaks out. Too wide and fills are infrequent. Here's how to use realised volatility to set a range that holds.</div>
+      </div>
+      <div class="article-card-meta">6 min read<br><span style="color:var(--dim)">2025-07-07</span></div>
+    </a>
+    <a class="article-card" href="/blog-funding-rate-drag.html">
+      <div>
+        <div class="article-card-tag">Risk</div>
+        <div class="article-card-title">The hidden cost of grid bots: funding rate drag explained</div>
+        <div class="article-card-desc">Funding accrues silently on open positions every 8 hours. Here's how to calculate it and whether it will consume your grid income.</div>
+      </div>
+      <div class="article-card-meta">6 min read<br><span style="color:var(--dim)">2025-07-10</span></div>
+    </a>
+    <a class="article-card" href="/blog-how-to-backtest.html">
+      <div>
+        <div class="article-card-tag">Walkthrough</div>
+        <div class="article-card-title">How to backtest a grid strategy before deploying capital</div>
+        <div class="article-card-desc">A step-by-step walkthrough of running a historical backtest — from sourcing OHLCV data to interpreting the results.</div>
+      </div>
+      <div class="article-card-meta">7 min read<br><span style="color:var(--dim)">2025-07-14</span></div>
+    </a>
+    <a class="article-card" href="/blog-monte-carlo-results.html">
+      <div>
+        <div class="article-card-tag">Walkthrough</div>
+        <div class="article-card-title">Reading your Monte Carlo results: what the percentile bands mean</div>
+        <div class="article-card-desc">The fan chart, percentile bands, Sharpe, Calmar, win rate — what each metric in the Monte Carlo output actually tells you and how to use it.</div>
+      </div>
+      <div class="article-card-meta">6 min read<br><span style="color:var(--dim)">2025-07-17</span></div>
+    </a>
+    <a class="article-card" href="/blog-liquidation.html">
+      <div>
+        <div class="article-card-tag">Risk</div>
+        <div class="article-card-title">How grid bot liquidation actually works — and how to calculate your price</div>
+        <div class="article-card-desc">Liquidation on a grid bot shifts constantly as orders fill and open contracts accumulate. Here's how to calculate it and why the danger zone is closer than most traders expect.</div>
+      </div>
+      <div class="article-card-meta">7 min read<br><span style="color:var(--dim)">2025-07-21</span></div>
+    </a>
+    <a class="article-card" href="/blog-how-many-grids.html">
+      <div>
+        <div class="article-card-tag">Strategy</div>
+        <div class="article-card-title">How many grids should you run? The spacing vs fill-frequency trade-off</div>
+        <div class="article-card-desc">More grids means more fills — until fees eat the profit. Here's how to find the right grid count for your range, capital, and fee rate.</div>
+      </div>
+      <div class="article-card-meta">6 min read<br><span style="color:var(--dim)">2025-07-24</span></div>
+    </a>
+    <a class="article-card" href="/blog-arithmetic-vs-geometric.html">
+      <div>
+        <div class="article-card-tag">Strategy</div>
+        <div class="article-card-title">Arithmetic vs geometric grid spacing: which is right for your setup</div>
+        <div class="article-card-desc">Arithmetic grids earn a fixed dollar amount per round trip. Geometric grids earn a fixed percentage. The difference matters most over wide ranges and volatile assets.</div>
+      </div>
+      <div class="article-card-meta">5 min read<br><span style="color:var(--dim)">2025-07-28</span></div>
+    </a>
+    <a class="article-card" href="/blog-market-regime.html">
+      <div>
+        <div class="article-card-tag">Risk</div>
+        <div class="article-card-title">Market regime detection: when to deploy a grid bot and when to wait</div>
+        <div class="article-card-desc">A grid bot deployed into a trending market will lose money reliably. Here's how to identify the regimes that suit a grid strategy and the signals that say wait.</div>
+      </div>
+      <div class="article-card-meta">6 min read<br><span style="color:var(--dim)">2025-07-31</span></div>
+    </a>
+    <a class="article-card" href="/blog-leverage.html">
+      <div>
+        <div class="article-card-tag">Strategy</div>
+        <div class="article-card-title">What leverage to use on a perpetual futures grid bot</div>
+        <div class="article-card-desc">Leverage amplifies both income and liquidation risk. Here's how to calculate the right leverage for your range, capital, and risk tolerance.</div>
+      </div>
+      <div class="article-card-meta">6 min read<br><span style="color:var(--dim)">2025-08-04</span></div>
+    </a>
+    <a class="article-card" href="/blog-backtest-pitfalls.html">
+      <div>
+        <div class="article-card-tag">Backtest</div>
+        <div class="article-card-title">Why your grid bot backtest looks better than your live results will</div>
+        <div class="article-card-desc">A backtest on one period is not validation. Here are the four ways grid bot backtests systematically flatter the strategy — and how to stress-test against each one.</div>
+      </div>
+      <div class="article-card-meta">7 min read<br><span style="color:var(--dim)">2025-08-07</span></div>
+    </a>
   </div>
 </div>
 
